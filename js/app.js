@@ -12,6 +12,7 @@ let activeNavView = 'dashboard';
 let usersData = {};
 let studentsData = {};
 let coursesData = {};
+let lessonsData = {};
 let homeworkData = {};
 let submissionsData = {};
 let quizzesData = {};
@@ -336,14 +337,18 @@ function initCyberDataFlowCanvas() {
 document.addEventListener('DOMContentLoaded', () => {
   console.log("KrurutClassroom application starting...");
   
-  // Recover local client cache (ag_homework) for instant offline startup
+  // Recover local client cache (ag_homework & ag_lessons) for instant offline startup
   try {
     const cachedHw = localStorage.getItem('ag_homework');
     if (cachedHw) {
       homeworkData = JSON.parse(cachedHw);
     }
+    const cachedLessons = localStorage.getItem('ag_lessons');
+    if (cachedLessons) {
+      lessonsData = JSON.parse(cachedLessons);
+    }
   } catch (e) {
-    console.warn("Failed reading ag_homework from localStorage:", e);
+    console.warn("Failed reading cache from localStorage:", e);
   }
 
   initCyberDataFlowCanvas();
@@ -405,6 +410,16 @@ function initRealtimeSync() {
     scheduleViewRender('courses');
     scheduleViewRender('dashboard');
     scheduleViewRender('reports');
+  });
+
+  // Listen to Lessons (Course Learning Materials: Images, PDFs, Videos)
+  listenToData('lessons', (data) => {
+    lessonsData = data || {};
+    try {
+      localStorage.setItem('ag_lessons', JSON.stringify(lessonsData));
+    } catch (e) {}
+    scheduleViewRender('courses');
+    scheduleViewRender('dashboard');
   });
 
   // Listen to Homework (Primary Firebase node + Local Client Cache)
@@ -1577,6 +1592,8 @@ function updateTargetChipsSummary(containerId) {
   let summaryId = 'hw-target-summary';
   if (containerId === 'hw-target-chips-container') summaryId = 'hw-target-summary';
   else if (containerId === 'edit-hw-target-chips-container') summaryId = 'edit-hw-target-summary';
+  else if (containerId === 'lesson-target-chips-container') summaryId = 'lesson-target-summary';
+  else if (containerId === 'edit-lesson-target-chips-container') summaryId = 'edit-lesson-target-summary';
   else if (containerId === 'quiz-target-chips-container') summaryId = 'quiz-target-summary';
   else if (containerId === 'edit-quiz-target-chips-container') summaryId = 'edit-quiz-target-summary';
 
@@ -1613,6 +1630,7 @@ function getSelectedTargetClasses(containerId) {
 
 function updateCourseDropdowns() {
   const hwCourseSelect = document.getElementById('hw-course-id');
+  const lessonCourseSelect = document.getElementById('lesson-course-id');
   const quizCourseSelect = document.getElementById('quiz-course-id');
   const repCourseFilter = document.getElementById('report-course-filter');
 
@@ -1623,7 +1641,8 @@ function updateCourseDropdowns() {
   });
 
   if (hwCourseSelect) hwCourseSelect.innerHTML = options;
-if (quizCourseSelect) quizCourseSelect.innerHTML = options;
+  if (lessonCourseSelect) lessonCourseSelect.innerHTML = options;
+  if (quizCourseSelect) quizCourseSelect.innerHTML = options;
   if (repCourseFilter) repCourseFilter.innerHTML = `<option value="">-- ทุกรายวิชา --</option>` + options.replace('<option value="">-- เลือกรายวิชา --</option>', '');
 }
 
@@ -1884,6 +1903,207 @@ async function saveHomeworkForm(e) {
   });
 }
 
+/* -------------------------------------------------------------
+   LESSON & LEARNING MATERIALS ENGINE (Images, PDFs, Video Links)
+------------------------------------------------------------- */
+function openCreateLessonModal(preselectedCourseId = '') {
+  document.getElementById('lesson-title').value = '';
+  document.getElementById('lesson-desc').value = '';
+  document.getElementById('lesson-video-url').value = '';
+  document.getElementById('lesson-files').value = '';
+
+  const courseSelect = document.getElementById('lesson-course-id');
+  if (courseSelect && preselectedCourseId) {
+    courseSelect.value = preselectedCourseId;
+  }
+
+  const courseId = courseSelect ? courseSelect.value : '';
+  renderTargetClassChips('lesson-target-chips-container', courseId, ['all']);
+
+  openModal('modal-create-lesson');
+}
+
+async function saveLessonForm(e) {
+  e.preventDefault();
+  const courseId = document.getElementById('lesson-course-id').value;
+  if (!courseId) {
+    showPopupWarning("กรุณาเลือกรายวิชา", "กรุณาเลือกรายวิชาที่ต้องการเพิ่มบทเรียน");
+    return;
+  }
+  const targetClasses = getSelectedTargetClasses('lesson-target-chips-container');
+  const targetClass = targetClasses.join(', ');
+  const title = document.getElementById('lesson-title').value.trim();
+  const desc = document.getElementById('lesson-desc').value.trim();
+  const videoUrl = document.getElementById('lesson-video-url').value.trim();
+  const fileList = document.getElementById('lesson-files').files;
+
+  const btnSave = document.getElementById('btn-save-lesson');
+  btnSave.disabled = true;
+  btnSave.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังอัปโหลดสื่อบทเรียน...`;
+
+  const attachments = [];
+  if (fileList && fileList.length > 0) {
+    for (let i = 0; i < fileList.length; i++) {
+      const f = fileList[i];
+      const uploadedUrl = await uploadImageFile(f);
+      if (uploadedUrl) {
+        const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
+        attachments.push({
+          name: f.name,
+          url: uploadedUrl,
+          size: f.size,
+          type: isPdf ? 'pdf' : 'image'
+        });
+      }
+    }
+  }
+
+  const newLesson = {
+    courseId,
+    targetClasses,
+    targetClass,
+    title,
+    desc,
+    videoUrl: videoUrl || null,
+    attachments: attachments.length > 0 ? attachments : null,
+    createdAt: new Date().toISOString(),
+    createdBy: currentUser ? currentUser.name : 'ครูผู้สอน'
+  };
+
+  pushData('lessons', newLesson).then((newKey) => {
+    btnSave.disabled = false;
+    btnSave.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> บันทึกและเผยแพร่บทเรียน`;
+    closeModal('modal-create-lesson');
+
+    if (newKey) {
+      lessonsData[newKey] = newLesson;
+      try {
+        localStorage.setItem('ag_lessons', JSON.stringify(lessonsData));
+      } catch (e) {}
+    }
+
+    showPopupSuccess("เพิ่มบทเรียนสำเร็จ!", `เผยแพร่บทเรียน "${title}" ให้นักเรียนเข้าศึกษาได้ทันที`);
+    logActivity(`เพิ่มบทเรียนใหม่: ${title}`);
+    renderCoursesList();
+  });
+}
+
+function openEditLessonModal(lessonId) {
+  const lesson = lessonsData[lessonId];
+  if (!lesson) return;
+
+  document.getElementById('edit-lesson-id').value = lessonId;
+  document.getElementById('edit-lesson-title').value = lesson.title || '';
+  document.getElementById('edit-lesson-desc').value = lesson.desc || '';
+  document.getElementById('edit-lesson-video-url').value = lesson.videoUrl || '';
+  document.getElementById('edit-lesson-files').value = '';
+
+  const selectedTargets = lesson.targetClasses || (lesson.targetClass ? lesson.targetClass.split(',').map(s => s.trim()) : ['all']);
+  renderTargetClassChips('edit-lesson-target-chips-container', lesson.courseId, selectedTargets);
+
+  const currentFilesDiv = document.getElementById('edit-lesson-files-current');
+  const atts = Array.isArray(lesson.attachments) ? lesson.attachments : [];
+  if (atts.length > 0) {
+    let attHtml = `<div style="font-size:0.84rem; color:var(--text-muted); margin-bottom:6px;">ไฟล์สื่อการสอนปัจจุบัน (${atts.length} ไฟล์):</div><div style="display:flex; flex-wrap:wrap; gap:6px;">`;
+    atts.forEach((att) => {
+      const isPdf = att.type === 'pdf' || (att.url && (att.url.includes('application/pdf') || att.url.toLowerCase().includes('.pdf')));
+      const safeUrl = (att.url || '').replace(/'/g, "\\'");
+      const safeName = (att.name || 'สื่อบทเรียน').replace(/'/g, "\\'");
+      attHtml += `
+        <button type="button" class="btn btn-sm ${isPdf ? 'btn-outline-danger' : 'btn-outline-primary'}" style="border-radius:8px; font-size:0.78rem;" onclick="showPDFPreviewModal('${safeUrl}', '${safeName}')">
+          <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}"></i> ${att.name || 'ดูไฟล์แนบ'}
+        </button>
+      `;
+    });
+    attHtml += `</div>`;
+    currentFilesDiv.innerHTML = attHtml;
+  } else {
+    currentFilesDiv.innerHTML = `<span style="font-size:0.84rem; color:var(--text-muted);">ยังไม่มีไฟล์ภาพหรือ PDF แนบ</span>`;
+  }
+
+  openModal('modal-edit-lesson');
+}
+
+async function saveEditLessonForm(e) {
+  e.preventDefault();
+  const lessonId = document.getElementById('edit-lesson-id').value;
+  const existingLesson = lessonsData[lessonId] || {};
+  const targetClasses = getSelectedTargetClasses('edit-lesson-target-chips-container');
+  const targetClass = targetClasses.join(', ');
+  const title = document.getElementById('edit-lesson-title').value.trim();
+  const desc = document.getElementById('edit-lesson-desc').value.trim();
+  const videoUrl = document.getElementById('edit-lesson-video-url').value.trim();
+  const fileList = document.getElementById('edit-lesson-files').files;
+
+  const btnUpdate = document.getElementById('btn-update-lesson');
+  btnUpdate.disabled = true;
+  btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...`;
+
+  let attachments = existingLesson.attachments || null;
+  if (fileList && fileList.length > 0) {
+    const newAtts = [];
+    for (let i = 0; i < fileList.length; i++) {
+      const f = fileList[i];
+      const uploadedUrl = await uploadImageFile(f);
+      if (uploadedUrl) {
+        const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
+        newAtts.push({
+          name: f.name,
+          url: uploadedUrl,
+          size: f.size,
+          type: isPdf ? 'pdf' : 'image'
+        });
+      }
+    }
+    if (newAtts.length > 0) {
+      attachments = newAtts;
+    }
+  }
+
+  const updatedLesson = {
+    targetClasses,
+    targetClass,
+    title,
+    desc,
+    videoUrl: videoUrl || null,
+    attachments,
+    updatedAt: new Date().toISOString()
+  };
+
+  updateData(`lessons/${lessonId}`, updatedLesson).then(() => {
+    btnUpdate.disabled = false;
+    btnUpdate.innerHTML = `<i class="fa-solid fa-save"></i> บันทึกการแก้ไขบทเรียน`;
+    closeModal('modal-edit-lesson');
+
+    lessonsData[lessonId] = { ...existingLesson, ...updatedLesson };
+    try {
+      localStorage.setItem('ag_lessons', JSON.stringify(lessonsData));
+    } catch (e) {}
+
+    showPopupSuccess("แก้ไขบทเรียนสำเร็จ!", `อัปเดตบทเรียน "${title}" เรียบร้อยแล้ว`);
+    logActivity(`แก้ไขบทเรียน: ${title}`);
+    renderCoursesList();
+  });
+}
+
+function deleteLesson(lessonId) {
+  const lesson = lessonsData[lessonId];
+  const title = lesson ? lesson.title : 'บทเรียน';
+
+  showPopupConfirm("ยืนยันลบบทเรียน", `คุณต้องการลบบทเรียน "${title}" ออกจากรายวิชานี้ใช่หรือไม่?`, "ลบบทเรียน", "warning").then((confirmed) => {
+    if (confirmed) {
+      deleteData(`lessons/${lessonId}`);
+      delete lessonsData[lessonId];
+      try {
+        localStorage.setItem('ag_lessons', JSON.stringify(lessonsData));
+      } catch (e) {}
+      showPopupSuccess("ลบบทเรียนสำเร็จ", `ลบบทเรียน "${title}" เรียบร้อยแล้ว`);
+      logActivity(`ลบบทเรียน: ${title}`);
+      renderCoursesList();
+    }
+  });
+}
+
 function resetCourseFilters() {
   const searchInput = document.getElementById('course-search-input');
   const levelFilter = document.getElementById('course-level-filter');
@@ -1943,14 +2163,20 @@ function renderCoursesList() {
                           (c.teacher || '').toLowerCase().includes(searchQuery);
       if (matchCourse) return true;
 
-      // Also search through its homeworks
+      // Also search through its homeworks or lessons
       const hasMatchingHw = Object.values(homeworkData).some(hw => {
         return hw.courseId === courseId && (
           (hw.title || '').toLowerCase().includes(searchQuery) ||
           (hw.desc || '').toLowerCase().includes(searchQuery)
         );
       });
-      return hasMatchingHw;
+      const hasMatchingLesson = Object.values(lessonsData).some(ls => {
+        return ls.courseId === courseId && (
+          (ls.title || '').toLowerCase().includes(searchQuery) ||
+          (ls.desc || '').toLowerCase().includes(searchQuery)
+        );
+      });
+      return hasMatchingHw || hasMatchingLesson;
     });
   }
 
@@ -1987,6 +2213,18 @@ function renderCoursesList() {
     const cleanTeacher = (course.teacher || 'ยังไม่ระบุ').trim().replace(/^"|"$/g, '');
     const cleanCode = (course.code || '-').trim();
     
+    // Find lessons for this course
+    const courseLessons = Object.keys(lessonsData)
+      .filter(lsId => {
+        const ls = lessonsData[lsId];
+        if (!ls || ls.courseId !== courseId) return false;
+        if (isStudent) {
+          return isStudentEligibleForHomework(studentClass, ls);
+        }
+        return true;
+      })
+      .map(lsId => ({ id: lsId, ...lessonsData[lsId] }));
+
     // Find homeworks for this course
     const courseHws = Object.keys(homeworkData)
       .filter(hwId => {
@@ -2014,6 +2252,9 @@ function renderCoursesList() {
                 <i class="fa-solid fa-graduation-cap"></i> ระดับชั้น ${course.level || '-'}
               </span>
               <span class="course-pill-count">
+                <i class="fa-solid fa-book-open-reader" style="color:#d97706;"></i> ${courseLessons.length} บทเรียน
+              </span>
+              <span class="course-pill-count">
                 <i class="fa-solid fa-clipboard-list" style="color:${theme.border};"></i> ${courseHws.length} ชิ้นงาน
               </span>
             </div>
@@ -2025,6 +2266,9 @@ function renderCoursesList() {
 
           ${(currentUser && currentUser.role !== 'student') ? `
             <div class="course-hero-actions">
+              <button class="course-glass-btn btn-glass-lesson" onclick="openCreateLessonModal('${courseId}')" title="เพิ่มบทเรียน รูปภาพ PDF หรือคลิปวิดีโอในวิชานี้">
+                <i class="fa-solid fa-book-open-reader"></i> เพิ่มบทเรียน
+              </button>
               <button class="course-glass-btn btn-glass-success" onclick="openCreateHomeworkModal('${courseId}')" title="สั่งการบ้านในวิชานี้">
                 <i class="fa-solid fa-plus-circle"></i> สั่งการบ้าน
               </button>
@@ -2038,8 +2282,124 @@ function renderCoursesList() {
           ` : ''}
         </div>
 
-        <!-- Course Content & Homework Grid -->
+        <!-- Course Content: Lessons & Homework Grid -->
         <div class="course-card-content">
+          <!-- SECTION A: LESSONS & LEARNING MATERIALS -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #f1f5f9;">
+            <div style="font-size:1.05rem; font-weight:800; color:#1e293b; display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-book-open-reader" style="color:#d97706;"></i> บทเรียนและสื่อการเรียนรู้ (${courseLessons.length} บทเรียน)
+            </div>
+            ${(currentUser && currentUser.role !== 'student') ? `
+              <button type="button" class="btn btn-sm" onclick="openCreateLessonModal('${courseId}')" style="background:#fffbeb; color:#b45309; border:1px solid #fde68a; border-radius:8px; font-weight:700; font-size:0.8rem; padding:4px 10px;">
+                <i class="fa-solid fa-plus"></i> เพิ่มบทเรียน
+              </button>
+            ` : ''}
+          </div>
+    `;
+
+    if (courseLessons.length === 0) {
+      html += `
+        <div style="padding:20px 18px; background:#fffdf7; border:1.5px dashed #fcd34d; border-radius:14px; text-align:center; color:#92400e; font-size:0.9rem; margin:10px 0 22px;">
+          <i class="fa-solid fa-book-open" style="font-size:1.45rem; color:#f59e0b; display:block; margin-bottom:5px;"></i>
+          ยังไม่มีบทเรียนหรือสื่อการสอนในวิชานี้ ${(currentUser && currentUser.role !== 'student') ? '(กดปุ่ม <strong>"เพิ่มบทเรียน"</strong> ด้านบนเพื่ออัปโหลดภาพ, PDF หรือลิงก์วิดีโอ)' : ''}
+        </div>
+      `;
+    } else {
+      html += `<div class="homework-grid" style="margin-bottom:24px;">`;
+      courseLessons.forEach(ls => {
+        const targets = ls.targetClasses || (ls.targetClass ? ls.targetClass.split(',').map(s => s.trim()) : ['all']);
+        const isTargetAll = targets.includes('all') || targets.length === 0;
+        const targetLabel = isTargetAll ? 'ทุกห้องเรียน' : 'ห้อง ' + targets.join(', ');
+        const embedUrl = getYouTubeEmbedUrl(ls.videoUrl);
+        const hasExternalVideo = ls.videoUrl && !embedUrl;
+        const atts = Array.isArray(ls.attachments) ? ls.attachments : [];
+
+        html += `
+          <div class="lesson-card-modern">
+            <div>
+              <div class="hw-card-top">
+                <span class="badge ${isTargetAll ? 'badge-purple' : 'badge-yellow'}" style="font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:8px;">
+                  <i class="${isTargetAll ? 'fa-solid fa-globe' : 'fa-solid fa-chalkboard'}"></i> ${targetLabel}
+                </span>
+                <span class="badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-weight:800; font-size:0.8rem; padding:4px 10px; border-radius:8px;">
+                  <i class="fa-solid fa-graduation-cap"></i> สื่อบทเรียน
+                </span>
+              </div>
+
+              <h4 class="hw-title-text" style="color:#78350f;">${ls.title}</h4>
+              ${ls.desc ? `<div class="hw-desc-text" style="background:#fffbeb; border-color:#fef3c7;">${ls.desc}</div>` : ''}
+
+              <!-- YouTube Video Embed -->
+              ${embedUrl ? `
+                <div style="margin:10px 0; border-radius:12px; overflow:hidden; border:1px solid #fde68a; box-shadow:0 2px 8px rgba(0,0,0,0.1); background:#000;">
+                  <div style="position:relative; padding-bottom:56.25%; height:0;">
+                    <iframe src="${embedUrl}" title="${ls.title || 'Lesson Video'}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- External Video / Media Link Button -->
+              ${hasExternalVideo ? `
+                <div style="margin:8px 0;">
+                  <a href="${ls.videoUrl}" target="_blank" rel="noopener noreferrer" class="hw-attachment-btn" style="background:#fef2f2; border-color:#fecaca; color:#b91c1c; text-decoration:none;">
+                    <i class="fa-solid fa-circle-play" style="font-size:1.25rem; color:#ef4444;"></i>
+                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">🎬 เปิดดูวิดีโอ / สื่อการเรียนรู้</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem; opacity:0.7;"></i>
+                  </a>
+                </div>
+              ` : ''}
+
+              <!-- Uploaded Images & PDF Files -->
+              ${atts.length > 0 ? `
+                <div style="display:flex; flex-direction:column; gap:7px; margin:10px 0;">
+                  ${atts.map((att, idx) => {
+                    const isPdf = att.type === 'pdf' || (att.url && (att.url.includes('application/pdf') || att.url.toLowerCase().includes('.pdf')));
+                    const safeUrl = (att.url || '').replace(/'/g, "\\'");
+                    const safeName = (att.name || `สื่อบทเรียน #${idx + 1}`).replace(/'/g, "\\'");
+                    return `
+                      ${!isPdf ? `
+                        <div style="border-radius:10px; overflow:hidden; border:1px solid #e2e8f0; cursor:pointer; max-height:190px; background:#f8fafc; display:flex; align-items:center; justify-content:center;" onclick="showPDFPreviewModal('${safeUrl}', '${safeName}')">
+                          <img src="${att.url}" alt="${safeName}" style="width:100%; max-height:190px; object-fit:cover; display:block;">
+                        </div>
+                      ` : ''}
+                      <button type="button" class="hw-attachment-btn" onclick="showPDFPreviewModal('${safeUrl}', '${safeName}')">
+                        <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}" style="font-size:1.2rem; color:${isPdf ? '#ef4444' : '#2563eb'};"></i>
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">${isPdf ? '📕 เปิดอ่านเอกสาร PDF:' : '🖼️ ดูภาพขยาย:'} ${att.name || `ไฟล์ที่ ${idx + 1}`}</span>
+                        <i class="fa-solid fa-expand" style="font-size:0.78rem; opacity:0.6;"></i>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="hw-card-bottom" style="margin-top:10px; padding-top:10px; border-top:1px dashed #fde68a; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:0.78rem; color:#92400e; font-weight:600;">
+                <i class="fa-regular fa-clock"></i> อัปเดต: ${ls.createdAt ? formatThaiDate(ls.createdAt.split('T')[0]) : '-'}
+              </span>
+              ${(currentUser && currentUser.role !== 'student') ? `
+                <div style="display:flex; gap:6px;">
+                  <button class="btn btn-sm btn-outline-primary" onclick="openEditLessonModal('${ls.id}')" title="แก้ไขบทเรียน" style="border-radius:8px; padding:5px 9px;">
+                    <i class="fa-solid fa-pen-to-square"></i> แก้ไข
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="deleteLesson('${ls.id}')" title="ลบบทเรียน" style="border-radius:8px; padding:5px 9px;">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              ` : `
+                <span class="badge badge-green" style="font-size:0.76rem; padding:3px 9px;">
+                  <i class="fa-solid fa-book-open-reader"></i> ศึกษาได้ตลอด 24 ชม.
+                </span>
+              `}
+            </div>
+          </div>
+        `;
+      });
+      html += `</div>`;
+    }
+
+    html += `
+          <!-- SECTION B: HOMEWORK & ASSIGNMENTS -->
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #f1f5f9;">
             <div style="font-size:1.05rem; font-weight:800; color:#1e293b; display:flex; align-items:center; gap:8px;">
               <i class="fa-solid fa-layer-group" style="color:${theme.border};"></i> รายการการบ้านและภาระงาน (${courseHws.length} ชิ้น)

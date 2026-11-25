@@ -134,7 +134,7 @@
             <label class="form-label" id="username-label">ชื่อผู้ใช้งาน หรือ รหัสประจำตัว (Username / Student ID)</label>
             <div class="input-with-icon">
               <i class="fa-solid fa-user input-icon"></i>
-              <input type="text" id="login-username" class="form-control" placeholder="เบอร์โทรศัพท์ (ครู) / รหัสประจำตัว (นักเรียน)" required autocomplete="username">
+              <input type="text" id="login-username" class="form-control" placeholder="ชื่อผู้ใช้งาน / รหัสประจำตัวนักเรียน" required autocomplete="username">
             </div>
           </div>
 
@@ -464,13 +464,16 @@
                   <i class="fa-solid fa-book-bookmark"></i>
                 </div>
                 <div>
-                  <h3 style="font-size:1.35rem; font-weight:800; color:#0f172a; margin:0; line-height:1.2;">รายวิชาและการบ้าน</h3>
-                  <span style="font-size:0.84rem; color:var(--text-muted);">จัดการรายวิชา มอบหมายการบ้าน เอกสาร PDF คลิปวิดีโอ และตรวจส่งงาน</span>
+                  <h3 style="font-size:1.35rem; font-weight:800; color:#0f172a; margin:0; line-height:1.2;">รายวิชา บทเรียน และการบ้าน</h3>
+                  <span style="font-size:0.84rem; color:var(--text-muted);">จัดการรายวิชา เพิ่มบทเรียน (รูปภาพ, เอกสาร PDF, คลิปวิดีโอ) มอบหมายการบ้าน และตรวจส่งงาน</span>
                 </div>
               </div>
               <div class="teacher-only" style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn btn-primary" onclick="openAddCourseModal()" style="border-radius:12px; font-weight:700; padding:9px 18px; box-shadow:0 3px 8px rgba(37,99,235,0.25);">
                   <i class="fa-solid fa-folder-plus"></i> สร้างรายวิชาใหม่
+                </button>
+                <button class="btn" onclick="openCreateLessonModal()" style="border-radius:12px; font-weight:700; padding:9px 18px; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#fff; border:none; box-shadow:0 3px 8px rgba(245,158,11,0.3);">
+                  <i class="fa-solid fa-book-open-reader"></i> เพิ่มบทเรียนใหม่
                 </button>
                 <button class="btn btn-success" onclick="openCreateHomeworkModal()" style="border-radius:12px; font-weight:700; padding:9px 18px; box-shadow:0 3px 8px rgba(16,185,129,0.25);">
                   <i class="fa-solid fa-plus-circle"></i> สั่งการบ้านใหม่
@@ -482,7 +485,7 @@
             <div class="no-print" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; background:#f8fafc; padding:12px 16px; border-radius:14px; border:1px solid #e2e8f0;">
               <div style="flex:1; min-width:240px;" class="input-with-icon">
                 <i class="fa-solid fa-magnifying-glass input-icon"></i>
-                <input type="text" id="course-search-input" class="form-control" placeholder="ค้นหา ชื่อวิชา, รหัสวิชา, หรือหัวข้อการบ้าน..." oninput="renderCoursesList()" style="border-radius:10px;">
+                <input type="text" id="course-search-input" class="form-control" placeholder="ค้นหา ชื่อวิชา, รหัสวิชา, บทเรียน หรือหัวข้อการบ้าน..." oninput="renderCoursesList()" style="border-radius:10px;">
               </div>
               <div style="width:180px;">
                 <select id="course-level-filter" class="form-control" onchange="renderCoursesList()" style="padding-left:12px; font-weight:700; border-radius:10px; border-color:#cbd5e1; color:#0f172a;">
@@ -1025,6 +1028,124 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-homework')">ยกเลิก</button>
           <button type="submit" class="btn btn-primary" id="btn-update-hw"><i class="fa-solid fa-save"></i> บันทึกการแก้ไข</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 4.3: Create Lesson Modal (เพิ่มบทเรียน / สื่อการเรียนรู้) -->
+  <div class="modal-overlay" id="modal-create-lesson">
+    <div class="modal-container">
+      <div class="modal-header" style="background:linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-bottom:2px solid #f59e0b;">
+        <h3 class="modal-title" style="color:#92400e;"><i class="fa-solid fa-book-open-reader" style="color:#d97706 !important;"></i> เพิ่มบทเรียน / สื่อการเรียนรู้ใหม่</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-create-lesson')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveLessonForm(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">เลือกรายวิชา *</label>
+            <select id="lesson-course-id" class="form-control" style="padding-left:14px;" required onchange="renderTargetClassChips('lesson-target-chips-container', this.value)">
+              <!-- Options loaded dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+              <span><i class="fa-solid fa-users-rectangle"></i> ห้องเรียนที่เข้าเรียนได้ (เลือกได้มากกว่า 1 ห้อง) *</span>
+              <span style="font-size:0.82rem; font-weight:600; color:#d97706;" id="lesson-target-summary">ทุกห้องเรียน</span>
+            </label>
+            <div id="lesson-target-chips-container" class="target-class-chips-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ชื่อบทเรียน / หัวข้อเรื่อง *</label>
+            <input type="text" id="lesson-title" class="form-control" style="padding-left:14px;" required placeholder="เช่น Unit 1: Present Simple Tense & Daily Routines">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">เนื้อหาบทเรียน / คำอธิบายประกอบการศึกษา</label>
+            <textarea id="lesson-desc" class="form-control" style="height:95px; resize:vertical;" placeholder="พิมพ์สรุปเนื้อหา คำศัพท์ หรือคำแนะนำให้นักเรียนศึกษา..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-video" style="color:#ef4444;"></i> ลิงก์วิดีโอบทเรียน (YouTube, Google Drive, TikTok, Canva หรือลิงก์สื่ออื่นๆ)</label>
+            <div class="input-with-icon">
+              <i class="fa-brands fa-youtube input-icon" style="color:#ef4444 !important;"></i>
+              <input type="url" id="lesson-video-url" class="form-control" placeholder="วางลิงก์ YouTube (เล่นในเว็บได้ทันที) หรือลิงก์วิดีโอ/สื่อภายนอก...">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label"><i class="fa-solid fa-file-circle-plus" style="color:#2563eb;"></i> อัปโหลดไฟล์ภาพประกอบ หรือ ไฟล์เอกสาร PDF บทเรียน (เลือกได้หลายไฟล์)</label>
+            <input type="file" id="lesson-files" class="form-control" accept="application/pdf,image/*,.pdf" multiple>
+            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">
+              <i class="fa-solid fa-circle-info"></i> สามารถเลือกอัปโหลดรูปภาพสไลด์สอนหลายรูปพร้อมกัน หรือไฟล์เอกสารใบความรู้ PDF ได้
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-create-lesson')">ยกเลิก</button>
+          <button type="submit" class="btn" id="btn-save-lesson" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#fff; border:none; font-weight:700;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> บันทึกและเผยแพร่บทเรียน
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 4.4: Edit Lesson Modal (แก้ไขบทเรียน) -->
+  <div class="modal-overlay" id="modal-edit-lesson">
+    <div class="modal-container">
+      <div class="modal-header" style="background:linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-bottom:2px solid #f59e0b;">
+        <h3 class="modal-title" style="color:#92400e;"><i class="fa-solid fa-pen-to-square" style="color:#d97706 !important;"></i> แก้ไขข้อมูลบทเรียน</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-edit-lesson')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveEditLessonForm(event)">
+        <input type="hidden" id="edit-lesson-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">ชื่อบทเรียน / หัวข้อเรื่อง *</label>
+            <input type="text" id="edit-lesson-title" class="form-control" style="padding-left:14px;" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+              <span><i class="fa-solid fa-users-rectangle"></i> ห้องเรียนที่เข้าเรียนได้ (เลือกได้มากกว่า 1 ห้อง) *</span>
+              <span style="font-size:0.82rem; font-weight:600; color:#d97706;" id="edit-lesson-target-summary">ทุกห้องเรียน</span>
+            </label>
+            <div id="edit-lesson-target-chips-container" class="target-class-chips-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">เนื้อหาบทเรียน / คำอธิบายประกอบการศึกษา</label>
+            <textarea id="edit-lesson-desc" class="form-control" style="height:95px; resize:vertical;"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-video" style="color:#ef4444;"></i> ลิงก์วิดีโอบทเรียน (YouTube หรือลิงก์สื่อภายนอก)</label>
+            <div class="input-with-icon">
+              <i class="fa-brands fa-youtube input-icon" style="color:#ef4444 !important;"></i>
+              <input type="url" id="edit-lesson-video-url" class="form-control" placeholder="วางลิงก์ YouTube หรือลิงก์วิดีโอ/สื่อการสอน...">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label"><i class="fa-solid fa-file-circle-plus" style="color:#2563eb;"></i> อัปโหลดไฟล์ภาพ หรือ ไฟล์ PDF บทเรียนใหม่ (หากต้องการเปลี่ยนไฟล์แนบ)</label>
+            <input type="file" id="edit-lesson-files" class="form-control" accept="application/pdf,image/*,.pdf" multiple>
+            <div id="edit-lesson-files-current" style="margin-top:8px;"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-lesson')">ยกเลิก</button>
+          <button type="submit" class="btn" id="btn-update-lesson" style="background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#fff; border:none; font-weight:700;">
+            <i class="fa-solid fa-save"></i> บันทึกการแก้ไขบทเรียน
+          </button>
         </div>
       </form>
     </div>
