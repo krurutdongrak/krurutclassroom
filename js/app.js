@@ -6994,8 +6994,7 @@ function renderHwSheetsNavTabs() {
     const shapeCount = Array.isArray(s.shapes) ? s.shapes.length : 0;
     return `
       <button type="button" class="hw-sheet-tab-btn ${isActive ? 'active' : ''}" onclick="switchHwCanvasSheet(${idx})" title="คลิกเพื่อเปิดและแก้ไข แผ่นที่ ${idx + 1}">
-        <i class="fa-regular fa-file-lines"></i> แผ่นที่ ${idx + 1}
-        ${shapeCount > 0 ? `<span style="font-size:0.7rem; opacity:0.85;">(${shapeCount})</span>` : ''}
+        #${idx + 1}${shapeCount > 0 ? `<span style="font-size:0.65rem; opacity:0.85;">(${shapeCount})</span>` : ''}
       </button>
     `;
   }).join('');
@@ -7082,6 +7081,27 @@ function toggleFlowchartMenuBar() {
   bar.style.display = isHidden ? 'flex' : 'none';
   if (btn) btn.classList.toggle('active', isHidden);
   if (caret) caret.className = isHidden ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+  setTimeout(fitHwCanvasStage, 60);
+}
+
+function toggleStudioCompactToolbar() {
+  const mainToolbar = document.getElementById('drawing-studio-main-toolbar');
+  const fcBar = document.getElementById('hw-flowchart-menubar');
+  const btn = document.getElementById('btn-toggle-studio-toolbar');
+  if (!mainToolbar) return;
+
+  const isHidden = mainToolbar.style.display === 'none';
+  mainToolbar.style.display = isHidden ? 'flex' : 'none';
+  if (!isHidden && fcBar) {
+    fcBar.style.display = 'none';
+  }
+  if (btn) {
+    btn.innerHTML = isHidden
+      ? `<i class="fa-solid fa-chevron-up"></i> ซ่อนแถบ`
+      : `<i class="fa-solid fa-chevron-down"></i> แสดงแถบเครื่องมือ`;
+    btn.style.background = isHidden ? '#0284c7' : '#10b981';
+  }
+  setTimeout(fitHwCanvasStage, 60);
 }
 
 function getHwCanvasCoords(e) {
@@ -8411,9 +8431,9 @@ function fitHwCanvasStage() {
   const drawCanvas = document.getElementById('hw-draw-canvas');
   if (!workspace || !drawCanvas) return;
 
-  const availW = Math.max(320, workspace.clientWidth - 28);
-  const availH = Math.max(280, workspace.clientHeight - 28);
-  const fitScale = Math.min(1.0, availW / drawCanvas.width, availH / drawCanvas.height);
+  const availW = Math.max(320, workspace.clientWidth - 14);
+  const availH = Math.max(280, workspace.clientHeight - 14);
+  const fitScale = Math.min(1.15, availW / drawCanvas.width, availH / drawCanvas.height);
   hwDrawState.zoom = Math.max(0.45, Math.round(fitScale * 100) / 100);
   applyHwCanvasZoom();
 }
