@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>KrurutClassroom - ระบบห้องเรียนออนไลน์ภาษาอังกฤษ</title>
+  
+  <!-- Official Thai Government Font: Sarabun (TH Sarabun New) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6.5.1 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="css/styles.css?v=8.19.0">
+
+  <!-- Firebase JS SDK (Compat version for smooth Realtime DB access) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+  <!-- SweetAlert2 Modern Popups -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Mozilla PDF.js Engine for Canvas PDF Rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+
+  <!-- jsPDF Engine for High-Efficiency PDF Compression -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ==========================================
+       1. LOGIN SCREEN (Interactive & Animated Edition)
+  =========================================== -->
+  <div id="login-screen" class="login-wrapper">
+    <!-- 3D English Language Classroom Floating Words & Interactive Canvas -->
+    <canvas id="cyber-matrix-canvas" class="cyber-matrix-canvas"></canvas>
+
+    <!-- English Classroom Background Ambience & Linguistic Grid -->
+    <div class="cyber-grid-mesh"></div>
+    <div class="english-bg-decor">
+      <div class="eng-floating-badge badge-abc"><i class="fa-solid fa-spell-check"></i> A B C</div>
+      <div class="eng-floating-badge badge-hello"><i class="fa-solid fa-comments"></i> Hello! Welcome</div>
+      <div class="eng-floating-badge badge-book"><i class="fa-solid fa-book-open-reader"></i> Grammar &amp; Reading</div>
+      <div class="eng-floating-badge badge-globe"><i class="fa-solid fa-earth-americas"></i> English Communication</div>
+      <div class="eng-floating-badge badge-headset"><i class="fa-solid fa-headphones-simple"></i> Listening &amp; Speaking</div>
+      <div class="eng-floating-badge badge-award"><i class="fa-solid fa-graduation-cap"></i> Vocabulary A-Z</div>
+    </div>
+    <div class="login-bg-glow-orb orb-1"></div>
+    <div class="login-bg-glow-orb orb-2"></div>
+    <div class="login-bg-glow-orb orb-3"></div>
+    <div class="login-bg-glow-orb orb-4"></div>
+
+    <div class="login-card-container">
+      
+      <!-- Left Branding Panel -->
+      <div class="login-branding">
+        <!-- Live Status Ribbon at top -->
+        <div class="brand-live-ribbon">
+          <span class="pulse-status-indicator"></span>
+          <span class="ribbon-text"><i class="fa-solid fa-earth-americas"></i> ENGLISH LEARNING CLOUD ACTIVE</span>
+        </div>
+
+        <div class="brand-header">
+          <div class="brand-logo-hero">
+            <div class="logo-ambient-aura"></div>
+            <img src="logo-krurut.png?v=3.0" alt="KrurutClassroom" class="brand-logo-image">
+          </div>
+          <p class="brand-subtitle">ระบบห้องเรียนภาษาอังกฤษออนไลน์และจัดการการเรียนรู้</p>
+        </div>
+
+        <div class="brand-features">
+          <div class="feature-pill pill-animated" style="--anim-delay: 0s;">
+            <div class="feature-icon-badge icon-bolt">
+              <i class="fa-solid fa-language"></i>
+            </div>
+            <span class="feature-text">ฝึกทักษะ Listening, Speaking, Reading &amp; Writing ครบวงจร</span>
+            <span class="shimmer-light-beam"></span>
+          </div>
+
+          <div class="feature-pill pill-animated" style="--anim-delay: 1s;">
+            <div class="feature-icon-badge icon-csv">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+            <span class="feature-text">ข้อมูลคะแนนและการส่งงาน Realtime Sync สด 100%</span>
+            <span class="shimmer-light-beam"></span>
+          </div>
+
+          <div class="feature-pill pill-animated" style="--anim-delay: 2s;">
+            <div class="feature-icon-badge icon-cloud">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <span class="feature-text">ส่งใบงานและไฟล์เสียง/รูปภาพผ่าน Cloudinary CDN ความเร็วสูง</span>
+            <span class="shimmer-light-beam"></span>
+          </div>
+
+          <div class="feature-pill pill-animated" style="--anim-delay: 3s;">
+            <div class="feature-icon-badge icon-quiz">
+              <i class="fa-solid fa-spell-check"></i>
+            </div>
+            <span class="feature-text">คลังข้อสอบภาษาอังกฤษ Vocabulary &amp; Grammar จับเวลามาตรฐาน</span>
+            <span class="shimmer-light-beam"></span>
+          </div>
+        </div>
+
+        <div class="brand-footer">
+          <span>© 2026 KrurutClassroom System</span>
+          <span class="ver-tag"><span class="ver-dot"></span> English Edition</span>
+        </div>
+      </div>
+
+      <!-- Right Form Panel -->
+      <div class="login-form-side">
+        <div class="login-header">
+          <div class="login-avatar">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <h2 class="login-title">เข้าสู่ระบบ (Sign In)</h2>
+          <p class="login-desc">กรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าสู่ห้องเรียนภาษาอังกฤษ KrurutClassroom</p>
+        </div>
+
+        <!-- Login Form (Unified Single Sign-On) -->
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label" id="username-label">ชื่อผู้ใช้งาน หรือ รหัสประจำตัว (Username / Student ID)</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user input-icon"></i>
+              <input type="text" id="login-username" class="form-control" placeholder="เบอร์โทรศัพท์ (ครู) / รหัสประจำตัว (นักเรียน)" required autocomplete="username">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">รหัสผ่าน (Password)</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="login-password" class="form-control" placeholder="รหัสผ่าน" required autocomplete="current-password">
+              <button type="button" class="toggle-pwd-btn" onclick="togglePasswordVisibility('login-password', this)">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Helpful Info Callout Box -->
+          <div class="login-info-box" id="login-info-box">
+            <div class="login-info-title">
+              <i class="fa-solid fa-circle-info"></i> คำแนะนำการเข้าใช้งาน:
+            </div>
+            <ul class="login-info-list" style="padding-left:18px; margin:0; line-height:1.5;">
+              <li><strong>ครู / ผู้ดูแลระบบ:</strong> ใช้ Username และ Password ของท่าน</li>
+              <li><strong>นักเรียน:</strong> ใช้ <u>รหัสประจำตัวนักเรียน</u> ทั้งช่องชื่อผู้ใช้และรหัสผ่าน</li>
+            </ul>
+          </div>
+
+          <button type="submit" class="btn-primary-large btn-login-shimmer" id="btn-login-submit">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>เข้าสู่ระบบ (Sign In)</span>
+            <span class="btn-shimmer-sweep"></span>
+          </button>
+        </form>
+
+        <div class="security-badge">
+          <span class="sec-shield-pulse"><i class="fa-solid fa-shield-halved"></i></span>
+          <span>256-Bit Encrypted Realtime Cloud Security System (Firebase DB)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==========================================
+       2. MAIN APP DASHBOARD SCREEN
+  =========================================== -->
+  <div id="app-screen" class="app-container" style="display: none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="logo-krurut.png?v=3.0" alt="KrurutClassroom Logo" class="sidebar-logo-img">
+        </div>
+        <div>
+          <div class="sidebar-brand-name">KrurutClassroom</div>
+          <div class="sidebar-brand-sub">ห้องเรียนภาษาอังกฤษ</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item active" onclick="switchNav('dashboard')" id="nav-dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>แดชบอร์ด</span>
+        </a>
+        <a class="nav-item teacher-only" onclick="switchNav('students')" id="nav-students">
+          <i class="fa-solid fa-users"></i>
+          <span>รายชื่อนักเรียน</span>
+        </a>
+        <a class="nav-item" onclick="switchNav('courses')" id="nav-courses">
+          <i class="fa-solid fa-book-open"></i>
+          <span>รายวิชาและการบ้าน</span>
+        </a>
+        <a class="nav-item" onclick="switchNav('quizzes')" id="nav-quizzes">
+          <i class="fa-solid fa-list-check"></i>
+          <span>แบบทดสอบ</span>
+        </a>
+        <a class="nav-item teacher-only" onclick="switchNav('reports')" id="nav-reports">
+          <i class="fa-solid fa-square-poll-vertical"></i>
+          <span>รายงานคะแนน</span>
+        </a>
+        <a class="nav-item teacher-only" onclick="switchNav('users')" id="nav-users">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>จัดการผู้ใช้</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user">
+        <div class="user-info">
+          <div class="user-avatar" id="sidebar-user-avatar">C</div>
+          <div class="user-details">
+            <span class="user-name" id="sidebar-user-name">คุณครูผู้สอน</span>
+            <span class="user-role-badge" id="sidebar-user-role">ครูผู้สอน</span>
+          </div>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()" title="ออกจากระบบ">
+          <i class="fa-solid fa-power-off"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Mobile Sidebar Dark Backdrop -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content Wrapper -->
+    <main class="main-wrapper">
+      
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-title-container">
+          <button class="mobile-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="page-title" id="page-title">แดชบอร์ดภาพรวมระบบ</h1>
+        </div>
+
+        <div class="header-right">
+          <div class="live-indicator" title="ข้อมูลอัปเดตสดจาก Google Firebase Realtime DB">
+            <div class="live-dot"></div>
+            <span>Online (Firebase Sync)</span>
+          </div>
+          <div class="header-clock" id="header-clock" title="เวลาปัจจุบัน">
+            <i class="fa-regular fa-clock"></i>
+            <span id="live-clock-time">12:00:00</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Views Body -->
+      <div class="content-body">
+
+        <!-- VIEW 1: DASHBOARD -->
+        <section id="view-dashboard" class="app-view active">
+          <!-- Modern High-Tech Announcement Banner with Light Shimmer -->
+          <div class="announcement-box banner-cyber-glow">
+            <span class="banner-shimmer-sweep"></span>
+            <div class="announcement-header-row">
+              <div class="announcement-title">
+                <div class="announcement-badge-icon">
+                  <i class="fa-solid fa-bullhorn"></i>
+                </div>
+                <div>
+                  <span id="announcement-heading" class="announcement-heading-text">ยินดีต้อนรับสู่ระบบห้องเรียนออนไลน์ KrurutClassroom</span>
+                  <div class="announcement-sub">ระบบจัดการการเรียนรู้และรายงานผลคะแนนแบบ Real-Time 24 ชม.</div>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-banner-edit teacher-only" onclick="openAnnouncementModal()">
+                <i class="fa-solid fa-pen-to-square"></i> แก้ไขประกาศ
+              </button>
+            </div>
+            <div class="announcement-content" id="announcement-body">
+              ขอให้นักเรียนทุกคนเข้าตรวจสอบรายวิชา การบ้าน และแบบทดสอบล่าสุดผ่านหน้าแดชบอร์ด ข้อมูลทุกอย่างจะอัปเดตสดแบบ Real-Time
+            </div>
+          </div>
+
+          <!-- Modern Stat Cards Grid with Sweeping Shimmer Beams -->
+          <div class="stats-grid">
+            <div class="stat-card card-stat-shimmer stat-cyan" style="--card-accent: #38bdf8; --shimmer-delay: 0s;">
+              <div class="stat-info">
+                <span class="stat-value" id="stat-students-count">0</span>
+                <span class="stat-label">นักเรียนในระบบ (คน)</span>
+              </div>
+              <div class="stat-icon blue">
+                <i class="fa-solid fa-user-graduate"></i>
+              </div>
+              <span class="stat-shimmer-beam"></span>
+            </div>
+
+            <div class="stat-card card-stat-shimmer stat-emerald" style="--card-accent: #10b981; --shimmer-delay: 1.2s;">
+              <div class="stat-info">
+                <span class="stat-value" id="stat-courses-count">0</span>
+                <span class="stat-label">รายวิชาทั้งหมด</span>
+              </div>
+              <div class="stat-icon green">
+                <i class="fa-solid fa-book-bookmark"></i>
+              </div>
+              <span class="stat-shimmer-beam"></span>
+            </div>
+
+            <div class="stat-card card-stat-shimmer stat-purple" style="--card-accent: #a855f7; --shimmer-delay: 2.4s;">
+              <div class="stat-info">
+                <span class="stat-value" id="stat-homework-count">0</span>
+                <span class="stat-label">การบ้านที่สั่งแล้ว</span>
+              </div>
+              <div class="stat-icon purple">
+                <i class="fa-solid fa-file-pen"></i>
+              </div>
+              <span class="stat-shimmer-beam"></span>
+            </div>
+
+            <div class="stat-card card-stat-shimmer stat-amber" style="--card-accent: #f59e0b; --shimmer-delay: 3.6s;">
+              <div class="stat-info">
+                <span class="stat-value" id="stat-quizzes-count">0</span>
+                <span class="stat-label">แบบทดสอบที่สร้าง</span>
+              </div>
+              <div class="stat-icon amber">
+                <i class="fa-solid fa-stopwatch"></i>
+              </div>
+              <span class="stat-shimmer-beam"></span>
+            </div>
+          </div>
+
+          <!-- Dashboard Layout Grid -->
+          <div class="dashboard-layout">
+            <!-- Left: Quick Overview Cards -->
+            <div>
+              <div class="card">
+                <div class="card-title">
+                  <span><i class="fa-solid fa-paper-plane" style="color:var(--primary)"></i> การบ้านและการส่งงานล่าสุด</span>
+                  <button class="btn btn-sm btn-outline-primary" onclick="switchNav('courses')">ดูทั้งหมด</button>
+                </div>
+                <div id="dashboard-homework-summary">
+                  <p class="text-muted" style="text-align:center; padding:20px;">ยังไม่มีข้อมูลการบ้าน</p>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-title">
+                  <span><i class="fa-solid fa-brain" style="color:var(--warning)"></i> แบบทดสอบที่เปิดทำ</span>
+                  <button class="btn btn-sm btn-outline-primary" onclick="switchNav('quizzes')">ดูทั้งหมด</button>
+                </div>
+                <div id="dashboard-quiz-summary">
+                  <p class="text-muted" style="text-align:center; padding:20px;">ยังไม่มีแบบทดสอบ</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Activity Feed -->
+            <div>
+              <div class="card">
+                <div class="card-title">
+                  <span><i class="fa-solid fa-clock-rotate-left" style="color:var(--accent)"></i> กิจกรรมล่าสุดในระบบ</span>
+                </div>
+                <div class="activity-list" id="activity-feed">
+                  <div class="activity-item">
+                    <div class="activity-icon"><i class="fa-solid fa-check"></i></div>
+                    <div>
+                      <div class="activity-text">ระบบเริ่มต้นพร้อมใช้งาน</div>
+                      <div class="activity-time">เมื่อสักครู่</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- VIEW 2: STUDENTS ROSTER -->
+        <section id="view-students" class="app-view" style="display: none;">
+          <div class="card" style="border-radius:18px; border:1px solid var(--border); box-shadow:var(--shadow-sm);">
+            <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #2563eb, #3b82f6); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.15rem; box-shadow:0 3px 8px rgba(37,99,235,0.3);">
+                  <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                  <h3 style="font-size:1.3rem; font-weight:800; color:#0f172a; margin:0;">ทำเนียบรายชื่อนักเรียน</h3>
+                  <span style="font-size:0.83rem; color:var(--text-muted);">จัดการรายชื่อ บัญชีเข้าสู่ระบบ และข้อมูลห้องเรียน</span>
+                </div>
+              </div>
+              <div class="teacher-only" style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-success" onclick="openImportCsvModal()" style="border-radius:10px; font-weight:600;">
+                  <i class="fa-solid fa-file-csv"></i> นำเข้าด้วย CSV
+                </button>
+                <button class="btn btn-primary" onclick="openAddStudentModal()" style="border-radius:10px; font-weight:600;">
+                  <i class="fa-solid fa-user-plus"></i> เพิ่มนักเรียน
+                </button>
+                <button class="btn btn-danger" onclick="openBatchDeleteStudentsModal()" style="border-radius:10px; font-weight:600;">
+                  <i class="fa-solid fa-trash-can"></i> ลบรายชื่อตามห้อง
+                </button>
+              </div>
+            </div>
+
+            <!-- Filters Bar & Classroom Selector -->
+            <div style="display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; align-items:center; background:#f8fafc; padding:12px 16px; border-radius:14px; border:1px solid #e2e8f0;">
+              <div style="display:flex; align-items:center; gap:8px; font-weight:700; color:#1e293b; font-size:0.92rem; min-width:140px;">
+                <i class="fa-solid fa-chalkboard-user" style="color:var(--primary);"></i> เลือกระดับชั้น/ห้อง:
+              </div>
+              <div style="width:220px;">
+                <select id="student-class-filter" class="form-control" onchange="renderStudentsTable()" style="padding-left:14px; font-weight:700; border-radius:10px; border-color:#cbd5e1; color:#0f172a;">
+                  <!-- Populated dynamically (Default to ม.1/1) -->
+                </select>
+              </div>
+              <div style="flex:1; min-width:220px;" class="input-with-icon">
+                <i class="fa-solid fa-magnifying-glass input-icon"></i>
+                <input type="text" id="student-search-input" class="form-control" placeholder="ค้นหา เลขที่, รหัสประจำตัว หรือ ชื่อ-สกุล..." oninput="renderStudentsTable()" style="border-radius:10px;">
+              </div>
+              <button class="btn btn-secondary no-print" onclick="window.print()" style="border-radius:10px;" title="พิมพ์ใบรายชื่อ">
+                <i class="fa-solid fa-print"></i> พิมพ์รายชื่อ
+              </button>
+            </div>
+
+            <!-- Room Summary Card (Dynamic Info) -->
+            <div id="student-room-summary-card" style="margin-bottom:14px;"></div>
+
+            <!-- Official Students Table -->
+            <div class="table-responsive" style="border-radius:14px; border:1px solid #e2e8f0; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+              <table class="table" style="margin:0;">
+                <thead>
+                  <tr style="background:linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);">
+                    <th style="width: 70px; text-align:center; font-weight:800; color:#1e293b;">เลขที่</th>
+                    <th style="width: 140px; font-weight:800; color:#1e293b;">รหัสประจำตัว</th>
+                    <th style="font-weight:800; color:#1e293b;">ชื่อ - สกุล</th>
+                    <th style="width: 130px; font-weight:800; color:#1e293b; text-align:center;">ระดับชั้น/ห้อง</th>
+                    <th style="font-weight:800; color:#1e293b;">ครูที่ปรึกษา</th>
+                    <th style="width: 160px; font-weight:800; color:#1e293b; text-align:center;">สถานะบัญชี Login</th>
+                    <th class="teacher-only" style="width: 90px; text-align:center; font-weight:800; color:#1e293b;">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="students-table-body">
+                  <tr>
+                    <td colspan="7" style="text-align:center; padding:30px;" class="text-muted">กำลังโหลดข้อมูล...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- VIEW 3: COURSES & HOMEWORK -->
+        <section id="view-courses" class="app-view" style="display: none;">
+          <div class="card" style="border-radius:20px; border:1px solid var(--border); box-shadow:var(--shadow-sm); padding:24px;">
+            <!-- Header Bar -->
+            <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:22px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:44px; height:44px; border-radius:14px; background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.3rem; box-shadow:0 4px 12px rgba(37,99,235,0.35);">
+                  <i class="fa-solid fa-book-bookmark"></i>
+                </div>
+                <div>
+                  <h3 style="font-size:1.35rem; font-weight:800; color:#0f172a; margin:0; line-height:1.2;">รายวิชาและการบ้าน</h3>
+                  <span style="font-size:0.84rem; color:var(--text-muted);">จัดการรายวิชา มอบหมายการบ้าน เอกสาร PDF คลิปวิดีโอ และตรวจส่งงาน</span>
+                </div>
+              </div>
+              <div class="teacher-only" style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="openAddCourseModal()" style="border-radius:12px; font-weight:700; padding:9px 18px; box-shadow:0 3px 8px rgba(37,99,235,0.25);">
+                  <i class="fa-solid fa-folder-plus"></i> สร้างรายวิชาใหม่
+                </button>
+                <button class="btn btn-success" onclick="openCreateHomeworkModal()" style="border-radius:12px; font-weight:700; padding:9px 18px; box-shadow:0 3px 8px rgba(16,185,129,0.25);">
+                  <i class="fa-solid fa-plus-circle"></i> สั่งการบ้านใหม่
+                </button>
+              </div>
+            </div>
+
+            <!-- Toolbar: Quick Search & Level Filter -->
+            <div class="no-print" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; background:#f8fafc; padding:12px 16px; border-radius:14px; border:1px solid #e2e8f0;">
+              <div style="flex:1; min-width:240px;" class="input-with-icon">
+                <i class="fa-solid fa-magnifying-glass input-icon"></i>
+                <input type="text" id="course-search-input" class="form-control" placeholder="ค้นหา ชื่อวิชา, รหัสวิชา, หรือหัวข้อการบ้าน..." oninput="renderCoursesList()" style="border-radius:10px;">
+              </div>
+              <div style="width:180px;">
+                <select id="course-level-filter" class="form-control" onchange="renderCoursesList()" style="padding-left:12px; font-weight:700; border-radius:10px; border-color:#cbd5e1; color:#0f172a;">
+                  <option value="all">-- ทุกระดับชั้น --</option>
+                </select>
+              </div>
+              <button class="btn btn-secondary" onclick="resetCourseFilters()" style="border-radius:10px; padding:8px 14px;" title="ล้างตัวกรอง">
+                <i class="fa-solid fa-rotate-left"></i> ล้างค้นหา
+              </button>
+            </div>
+
+            <!-- Course Cards & Homework Grid Container -->
+            <div id="courses-list-container">
+              <p class="text-muted" style="text-align:center; padding:30px;">กำลังโหลดรายวิชา...</p>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- VIEW 4: QUIZZES & EXAMS REPOSITORY -->
+        <section id="view-quizzes" class="app-view" style="display: none;">
+          <div class="card" style="border-radius:20px; border:1px solid var(--border); box-shadow:var(--shadow-sm); padding:24px;">
+            <!-- Header Bar -->
+            <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:22px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:46px; height:46px; border-radius:14px; background:linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.35rem; box-shadow:0 4px 14px rgba(139,92,246,0.35);">
+                  <i class="fa-solid fa-file-signature"></i>
+                </div>
+                <div>
+                  <h3 style="font-size:1.35rem; font-weight:800; color:#0f172a; margin:0; line-height:1.2;">คลังแบบทดสอบและข้อสอบ</h3>
+                  <span style="font-size:0.84rem; color:var(--text-muted);">จัดการแบบทดสอบออนไลน์ ปรนัย 4-5 ตัวเลือก พร้อมระบบจับเวลาและตรวจคะแนนอัตโนมัติ</span>
+                </div>
+              </div>
+              <div class="teacher-only" style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="openCreateQuizModal()" style="border-radius:12px; font-weight:700; padding:10px 20px; box-shadow:0 4px 12px rgba(37,99,235,0.3);">
+                  <i class="fa-solid fa-square-plus"></i> สร้างแบบทดสอบใหม่
+                </button>
+              </div>
+            </div>
+
+            <!-- Toolbar: Quick Search & Course/Class Filter -->
+            <div class="no-print" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; background:#f8fafc; padding:12px 16px; border-radius:14px; border:1px solid #e2e8f0;">
+              <div style="flex:1; min-width:240px;" class="input-with-icon">
+                <i class="fa-solid fa-magnifying-glass input-icon"></i>
+                <input type="text" id="quiz-search-input" class="form-control" placeholder="ค้นหา ชื่อแบบทดสอบ หรือ รายวิชา..." oninput="renderQuizzesList()" style="border-radius:10px;">
+              </div>
+              <div style="width:200px;">
+                <select id="quiz-course-filter" class="form-control" onchange="renderQuizzesList()" style="padding-left:12px; font-weight:700; border-radius:10px; border-color:#cbd5e1; color:#0f172a;">
+                  <option value="all">-- ทุกรายวิชา --</option>
+                </select>
+              </div>
+              <div style="width:170px;">
+                <select id="quiz-class-filter" class="form-control" onchange="renderQuizzesList()" style="padding-left:12px; font-weight:700; border-radius:10px; border-color:#cbd5e1; color:#0f172a;">
+                  <option value="all">-- ทุกห้องเรียน --</option>
+                </select>
+              </div>
+              <button class="btn btn-secondary" onclick="resetQuizFilters()" style="border-radius:10px; padding:8px 14px;" title="ล้างตัวกรอง">
+                <i class="fa-solid fa-rotate-left"></i> ล้างค้นหา
+              </button>
+            </div>
+
+            <!-- Quiz Cards Grid Container -->
+            <div id="quizzes-list-container">
+              <p class="text-muted" style="text-align:center; padding:30px;">กำลังโหลดแบบทดสอบ...</p>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- VIEW 5: SCORE REPORTS WITH CLASSROOM SELECTOR & SEARCH -->
+        <section id="view-reports" class="app-view" style="display: none;">
+          <div class="card" style="border-radius:18px; border:1px solid var(--border); box-shadow:var(--shadow-sm);">
+            <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #2563eb, #3b82f6); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.15rem; box-shadow:0 3px 8px rgba(37,99,235,0.3);">
+                  <i class="fa-solid fa-square-poll-vertical"></i>
+                </div>
+                <div>
+                  <h3 style="font-size:1.3rem; font-weight:800; color:#0f172a; margin:0;">สรุปรายงานคะแนนเก็บและคะแนนสอบ</h3>
+                  <span style="font-size:0.83rem; color:var(--text-muted);">รายงานผลคะแนนการบ้านและแบบทดสอบแยกตามรายห้องเรียน</span>
+                </div>
+              </div>
+              <button class="btn btn-secondary no-print" onclick="window.print()" style="border-radius:10px; font-weight:600;">
+                <i class="fa-solid fa-print"></i> พิมพ์รายงาน / PDF
+              </button>
+            </div>
+
+            <!-- Filters Bar (Classroom Dropdown, Course Dropdown, Search Input) -->
+            <div class="no-print" style="display:flex; gap:12px; margin-bottom:18px; flex-wrap:wrap; align-items:center; background:#f8fafc; padding:12px 16px; border-radius:14px; border:1px solid #e2e8f0;">
+              
+              <!-- Classroom Filter (Default: ม.1/1) -->
+              <div style="width:200px;">
+                <label style="font-size:0.82rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">
+                  <i class="fa-solid fa-chalkboard-user" style="color:var(--primary);"></i> เลือกห้องเรียน:
+                </label>
+                <select id="report-class-filter" class="form-control" onchange="renderScoreReports()" style="padding-left:12px; font-weight:700; border-radius:10px; color:#0f172a; border-color:#cbd5e1;">
+                  <!-- Dynamically populated, default: ม.1/1 -->
+                </select>
+              </div>
+
+              <!-- Course Filter -->
+              <div style="width:220px;">
+                <label style="font-size:0.82rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">
+                  <i class="fa-solid fa-book" style="color:var(--primary);"></i> เลือกรายวิชา:
+                </label>
+                <select id="report-course-filter" class="form-control" onchange="renderScoreReports()" style="padding-left:12px; font-weight:700; border-radius:10px; color:#0f172a; border-color:#cbd5e1;">
+                  <option value="">-- รวมทุกรายวิชา --</option>
+                </select>
+              </div>
+
+              <!-- Student Search Input -->
+              <div style="flex:1; min-width:220px;">
+                <label style="font-size:0.82rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">
+                  <i class="fa-solid fa-magnifying-glass" style="color:var(--primary);"></i> ค้นหานักเรียน:
+                </label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-magnifying-glass input-icon"></i>
+                  <input type="text" id="report-student-search-input" class="form-control" placeholder="ค้นหา ชื่อ-สกุล หรือ รหัสประจำตัว..." oninput="renderScoreReports()" style="border-radius:10px;">
+                </div>
+              </div>
+
+              <!-- Reset Filter Button & Scale Indicator -->
+              <div style="align-self:flex-end; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span id="report-scale-badge" class="badge badge-blue" style="font-size:0.82rem; font-weight:700; padding:8px 12px; border-radius:10px;">
+                  <i class="fa-solid fa-scale-balanced"></i> เกณฑ์คะแนน: สามัญ 50:50 | ปวช. 60:40
+                </span>
+                <button class="btn btn-secondary" onclick="resetReportFilters()" style="border-radius:10px; padding:9px 14px;" title="รีเซ็ตค่าเริ่มต้น">
+                  <i class="fa-solid fa-rotate-left"></i> รีเซ็ต
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Score Table -->
+            <div class="table-responsive" style="background:#ffffff; border-radius:14px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(15,23,42,0.03);">
+              <table class="table" style="margin:0;">
+                <thead style="background:#f1f5f9;">
+                  <tr>
+                    <th style="width:70px; text-align:center;">เลขที่</th>
+                    <th style="width:120px;">รหัสประจำตัว</th>
+                    <th>ชื่อ - สกุล</th>
+                    <th style="text-align:center;">ระดับชั้น</th>
+                    <th id="report-th-hw" style="text-align:center;">คะแนนการบ้าน</th>
+                    <th id="report-th-quiz" style="text-align:center;">คะแนนแบบทดสอบ</th>
+                    <th id="report-th-total" style="text-align:center;">คะแนนรวม</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-table-body">
+                  <tr>
+                    <td colspan="7" style="text-align:center; padding:30px;" class="text-muted">กำลังโหลดรายงาน...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- VIEW 6: USER MANAGEMENT WITH SEARCH & PAGINATION -->
+        <section id="view-users" class="app-view" style="display: none;">
+          <div class="card" style="border-radius:18px; border:1px solid var(--border); box-shadow:var(--shadow-sm);">
+            <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #2563eb, #3b82f6); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.15rem; box-shadow:0 3px 8px rgba(37,99,235,0.3);">
+                  <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <div>
+                  <h3 style="font-size:1.3rem; font-weight:800; color:#0f172a; margin:0;">จัดการผู้ใช้งานในระบบ</h3>
+                  <span style="font-size:0.83rem; color:var(--text-muted);">จัดการบัญชีผู้ใช้งาน สิทธิ์การเข้าถึง และรีเซ็ตรหัสผ่าน</span>
+                </div>
+              </div>
+              <button class="btn btn-primary" onclick="openAddUserModal()" style="border-radius:10px; font-weight:600;">
+                <i class="fa-solid fa-user-plus"></i> เพิ่มผู้ใช้งาน
+              </button>
+            </div>
+
+            <!-- Search & Filters Toolbar -->
+            <div style="display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; align-items:center; background:#f8fafc; padding:12px 16px; border-radius:14px; border:1px solid #e2e8f0;">
+              
+              <!-- Search Input -->
+              <div style="flex:1; min-width:240px;" class="input-with-icon">
+                <i class="fa-solid fa-magnifying-glass input-icon"></i>
+                <input type="text" id="user-search-input" class="form-control" placeholder="ค้นหา ชื่อผู้ใช้ (Username), ชื่อ-สกุล หรือระดับชั้น..." oninput="onUserSearchInput()" style="border-radius:10px;">
+              </div>
+
+              <!-- Role Filter -->
+              <div style="width:190px;">
+                <select id="user-role-filter" class="form-control" onchange="onUserFilterChange()" style="padding-left:14px; font-weight:700; border-radius:10px; border-color:#cbd5e1; color:#0f172a;">
+                  <option value="all">-- ทุกบทบาท/สิทธิ์ --</option>
+                  <option value="teacher">ครู / บุคลากร</option>
+                  <option value="admin">ผู้ดูแลระบบ (Admin)</option>
+                  <option value="student">นักเรียน (Student)</option>
+                </select>
+              </div>
+
+              <button class="btn btn-secondary" onclick="resetUserFilters()" style="border-radius:10px;" title="ล้างการค้นหา">
+                <i class="fa-solid fa-rotate-left"></i> ล้างค้นหา
+              </button>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-responsive" style="background:#ffffff; border-radius:14px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(15,23,42,0.03);">
+              <table class="table" style="margin:0;">
+                <thead style="background:#f1f5f9;">
+                  <tr>
+                    <th style="width: 60px; text-align:center;">ลำดับ</th>
+                    <th>ชื่อผู้ใช้งาน (Username)</th>
+                    <th>ชื่อ - สกุล</th>
+                    <th style="text-align:center;">สิทธิ์ / บทบาท</th>
+                    <th>รหัสประจำตัว / ข้อมูลห้อง</th>
+                    <th style="width: 140px; text-align:center;">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body">
+                  <tr>
+                    <td colspan="6" style="text-align:center; padding:30px;" class="text-muted">กำลังโหลดข้อมูลผู้ใช้...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Users Pagination Bar -->
+            <div class="pagination-wrapper" id="users-pagination-wrapper">
+              <div class="pagination-info" id="users-pagination-info">
+                แสดง 0 - 0 จากทั้งหมด 0 คน
+              </div>
+              <div class="pagination-controls" id="users-pagination-controls">
+                <!-- Pagination buttons rendered here -->
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+
+  <!-- ==========================================
+       MODALS SYSTEM
+  =========================================== -->
+
+  <!-- Modal 1: Add Student Modal -->
+  <div class="modal-overlay" id="modal-add-student">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-user-plus"></i> เพิ่มข้อมูลนักเรียน</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-add-student')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveStudentForm(event)">
+        <div class="modal-body">
+          <div style="display:grid; grid-template-columns:1fr 2fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">เลขที่ *</label>
+              <input type="number" id="std-no" class="form-control" style="padding-left:14px;" required min="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">รหัสประจำตัว *</label>
+              <input type="text" id="std-id" class="form-control" style="padding-left:14px;" required placeholder="เช่น 66001">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ชื่อ - สกุล *</label>
+            <input type="text" id="std-name" class="form-control" style="padding-left:14px;" required placeholder="ด.ช./ด.ญ./นาย/นางสาว...">
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">ระดับชั้น *</label>
+              <input type="text" id="std-class" class="form-control" style="padding-left:14px;" required placeholder="เช่น ม.1/1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ครูที่ปรึกษา *</label>
+              <select id="std-advisor" class="form-control" style="padding-left:14px;" required>
+                <option value="">-- เลือกครูที่ปรึกษา --</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="login-info-box" style="margin-top:10px; margin-bottom:0;">
+            <i class="fa-solid fa-key"></i> ระบบจะสร้างสิทธิ์เข้าใช้งานให้นักเรียนอัตโนมัติ โดยใช้ <strong>รหัสประจำตัว</strong> เป็นทั้งชื่อผู้ใช้และรหัสผ่าน
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-student')">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> บันทึกข้อมูล</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 2: Import CSV Modal -->
+  <div class="modal-overlay" id="modal-import-csv">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-file-csv"></i> นำเข้ารายชื่อนักเรียนด้วย CSV</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-import-csv')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="processCsvImport(event)">
+        <div class="modal-body">
+          <div class="login-info-box">
+            <div class="login-info-title"><i class="fa-solid fa-circle-info"></i> รูปแบบไฟล์ CSV ที่รองรับ:</div>
+            <p>ต้องมีหัวคอลัมน์ (Header) ดังนี้ตรงทุกประการ:</p>
+            <code style="background:#ffffff; padding:4px 8px; border-radius:6px; display:block; margin-top:6px; font-weight:bold; color:#1e40af;">เลขที่, รหัสประจำตัว, ชื่อ-สกุล, ระดับชั้น, ครูที่ปรึกษา</code>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">เลือกไฟล์ CSV *</label>
+            <input type="file" id="csv-file-input" class="form-control" accept=".csv" required style="padding-left:14px;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-import-csv')">ยกเลิก</button>
+          <button type="submit" class="btn btn-success"><i class="fa-solid fa-upload"></i> เริ่มนำเข้าข้อมูล</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 3: Add Course Modal -->
+  <div class="modal-overlay" id="modal-add-course">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-folder-plus"></i> สร้างรายวิชาใหม่</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-add-course')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveCourseForm(event)">
+        <div class="modal-body">
+          <div style="display:grid; grid-template-columns:1fr 2fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">รหัสวิชา *</label>
+              <input type="text" id="course-code" class="form-control" style="padding-left:14px;" required placeholder="เช่น ว21101">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ชื่อรายวิชา *</label>
+              <input type="text" id="course-name" class="form-control" style="padding-left:14px;" required placeholder="เช่น วิทยาการคำนวณ 1">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">ระดับชั้น *</label>
+              <select id="course-level" class="form-control" required>
+                <option value="">-- เลือกระดับชั้น --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ครูผู้สอน *</label>
+              <select id="course-teacher" class="form-control" required>
+                <option value="">-- เลือกครูผู้สอน --</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-course')">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> สร้างรายวิชา</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 4: Create Homework Modal -->
+  <div class="modal-overlay" id="modal-create-homework">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-plus-circle"></i> มอบหมายการบ้านใหม่</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-create-homework')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveHomeworkForm(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">เลือกรายวิชา *</label>
+            <select id="hw-course-id" class="form-control" style="padding-left:14px;" required onchange="renderTargetClassChips('hw-target-chips-container', this.value)">
+              <!-- Options loaded dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+              <span><i class="fa-solid fa-users-rectangle"></i> ห้องเรียนเป้าหมาย (เลือกได้มากกว่า 1 ห้อง) *</span>
+              <span style="font-size:0.82rem; font-weight:600; color:var(--primary);" id="hw-target-summary">ทุกห้องเรียน</span>
+            </label>
+            <div id="hw-target-chips-container" class="target-class-chips-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">หัวข้อการบ้าน / ชิ้นงาน *</label>
+            <input type="text" id="hw-title" class="form-control" style="padding-left:14px;" required placeholder="เช่น ใบงานที่ 1 เรื่องขั้นตอนการแก้ปัญหา">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">รายละเอียดคำสั่งงาน</label>
+            <textarea id="hw-desc" class="form-control" style="height:70px; resize:vertical;" placeholder="คำอธิบายรายละเอียดงานเพิ่มเติม..."></textarea>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">คะแนนเต็ม *</label>
+              <input type="number" id="hw-max-score" class="form-control" required value="10" min="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">กำหนดส่ง *</label>
+              <input type="date" id="hw-due-date" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><i class="fa-brands fa-youtube" style="color:#ef4444;"></i> แนบลิงก์คลิปวิดีโอ YouTube (เล่นคลิปในเว็บได้ทันที)</label>
+            <div class="input-with-icon">
+              <i class="fa-brands fa-youtube input-icon" style="color:#ef4444 !important;"></i>
+              <input type="url" id="hw-youtube-url" class="form-control" placeholder="เช่น https://www.youtube.com/watch?v=... หรือ https://youtu.be/...">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label"><i class="fa-solid fa-paperclip" style="color:var(--primary);"></i> แนบไฟล์เอกสาร PDF หรือ ไฟล์รูปภาพ คำสั่งงาน</label>
+            <input type="file" id="hw-img-file" class="form-control" accept="application/pdf,image/*">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-create-homework')">ยกเลิก</button>
+          <button type="submit" class="btn btn-success" id="btn-save-hw">
+            <i class="fa-solid fa-paper-plane"></i> ประกาศการบ้าน
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 4.1: Edit Course Modal -->
+  <div class="modal-overlay" id="modal-edit-course">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลรายวิชา</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-edit-course')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveEditCourseForm(event)">
+        <input type="hidden" id="edit-course-id">
+        <div class="modal-body">
+          <div style="display:grid; grid-template-columns:1fr 2fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">รหัสวิชา *</label>
+              <input type="text" id="edit-course-code" class="form-control" style="padding-left:14px;" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ชื่อรายวิชา *</label>
+              <input type="text" id="edit-course-name" class="form-control" style="padding-left:14px;" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">ระดับชั้น *</label>
+              <select id="edit-course-level" class="form-control" required>
+                <option value="">-- เลือกระดับชั้น --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ครูผู้สอน *</label>
+              <select id="edit-course-teacher" class="form-control" required>
+                <option value="">-- เลือกครูผู้สอน --</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-course')">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> บันทึกการแก้ไข</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 4.2: Edit Homework Modal -->
+  <div class="modal-overlay" id="modal-edit-homework">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลการบ้าน</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-edit-homework')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveEditHomeworkForm(event)">
+        <input type="hidden" id="edit-hw-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">หัวข้อการบ้าน / ชิ้นงาน *</label>
+            <input type="text" id="edit-hw-title" class="form-control" style="padding-left:14px;" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+              <span><i class="fa-solid fa-users-rectangle"></i> ห้องเรียนเป้าหมาย (เลือกได้มากกว่า 1 ห้อง) *</span>
+              <span style="font-size:0.82rem; font-weight:600; color:var(--primary);" id="edit-hw-target-summary">ทุกห้องเรียน</span>
+            </label>
+            <div id="edit-hw-target-chips-container" class="target-class-chips-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">รายละเอียดคำสั่งงาน</label>
+            <textarea id="edit-hw-desc" class="form-control" style="height:70px; resize:vertical;"></textarea>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">คะแนนเต็ม *</label>
+              <input type="number" id="edit-hw-max-score" class="form-control" required min="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">กำหนดส่ง *</label>
+              <input type="date" id="edit-hw-due-date" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><i class="fa-brands fa-youtube" style="color:#ef4444;"></i> แนบลิงก์คลิปวิดีโอ YouTube (เล่นคลิปในเว็บได้ทันที)</label>
+            <div class="input-with-icon">
+              <i class="fa-brands fa-youtube input-icon" style="color:#ef4444 !important;"></i>
+              <input type="url" id="edit-hw-youtube-url" class="form-control" placeholder="เช่น https://www.youtube.com/watch?v=... หรือ https://youtu.be/...">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label"><i class="fa-solid fa-paperclip" style="color:var(--primary);"></i> แนบไฟล์เอกสาร PDF หรือ ไฟล์รูปภาพ คำสั่งงาน</label>
+            <input type="file" id="edit-hw-file" class="form-control" accept="application/pdf,image/*">
+            <div id="edit-hw-file-current" style="margin-top:8px;"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-homework')">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary" id="btn-update-hw"><i class="fa-solid fa-save"></i> บันทึกการแก้ไข</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 5: Student Submit Homework Modal -->
+  <div class="modal-overlay" id="modal-submit-homework">
+    <div class="modal-container" style="max-width:680px; width:95vw; background:#ffffff; border-radius:24px; padding:24px; box-shadow:0 25px 50px -12px rgba(15, 23, 42, 0.25);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:44px; height:44px; border-radius:14px; background:linear-gradient(135deg, #2563eb, #3b82f6); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.25rem; box-shadow:0 4px 14px rgba(37,99,235,0.35);">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </div>
+          <div>
+            <h3 class="modal-title" style="margin:0; font-size:1.3rem; font-weight:800; color:#0f172a;">ส่งการบ้าน / ภาระงาน</h3>
+            <span style="font-size:0.83rem; color:var(--text-muted);">ส่งงานและแนบไฟล์ประกอบการเรียนของคุณ</span>
+          </div>
+        </div>
+        <button class="btn-close-modal" onclick="closeModal('modal-submit-homework')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form onsubmit="handleStudentHomeworkSubmit(event)">
+        <input type="hidden" id="submit-hw-id">
+        <div class="modal-body" style="padding:0; display:flex; flex-direction:column; gap:16px;">
+          
+          <!-- Homework Briefing Card (Rendered Dynamically) -->
+          <div id="submit-hw-details">
+            <!-- HW title & instruction rendered here -->
+          </div>
+
+          <!-- Text Answer Field -->
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" style="font-weight:700; font-size:0.92rem; color:#1e293b; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-comment-dots" style="color:var(--primary);"></i> ข้อความคำตอบ / หมายเหตุถึงครูผู้สอน
+            </label>
+            <textarea id="submit-text-answer" class="form-control" style="height:85px; resize:vertical; padding:12px 14px; border-radius:12px;" placeholder="พิมพ์คำอธิบาย หรือข้อความคำตอบที่ต้องการส่งถึงครู..."></textarea>
+          </div>
+
+          <!-- iPad / Tablet Interactive Drawing, Handwriting & Coloring Studio Launcher -->
+          <div class="ipad-draw-promo-banner">
+            <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:220px;">
+              <div style="width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, #4f46e5, #db2777); color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; box-shadow:0 4px 10px rgba(124,58,237,0.28);">
+                <i class="fa-solid fa-palette"></i>
+              </div>
+              <div>
+                <div style="font-weight:800; color:#1e1b4b; font-size:0.95rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                  <span>กระดานเขียนงาน วาดภาพ และระบายสี</span>
+                  <span class="badge badge-purple" style="font-size:0.72rem; padding:2px 8px;">รองรับ iPad / ปากกา / มือถือ</span>
+                </div>
+                <div style="font-size:0.8rem; color:#475569; margin-top:2px;">
+                  เขียนข้อความด้วยลายมือ วาดผังงาน ระบายสี หรือดึงใบงานครูมาเขียนตอบทับได้ทันที (วาดได้หลายหน้า)
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn-launch-drawing-studio" onclick="openHomeworkDrawingStudio()">
+              <i class="fa-solid fa-pen-ruler"></i> เปิดกระดานเขียน/วาดระบายสี
+            </button>
+          </div>
+
+          <!-- Modern Upload Dropzone & Live Preview Component (Supports Multi-Images & PDF) -->
+          <div class="form-group" style="margin-bottom:0;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+              <label class="form-label" style="font-weight:700; font-size:0.92rem; color:#1e293b; margin:0; display:flex; align-items:center; gap:6px;">
+                <i class="fa-solid fa-camera-retro" style="color:var(--primary);"></i> ถ่ายภาพ / แนบรูปภาพ (ได้หลายภาพ) หรือ ไฟล์ PDF ชิ้นงาน
+              </label>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span id="submit-file-status-badge" class="badge badge-purple" style="font-size:0.78rem; font-weight:600;">ยังไม่ได้เลือกไฟล์</span>
+                <button type="button" id="btn-add-more-student-files" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('submit-img-file').click()" style="display:none; border-radius:8px; font-weight:700; font-size:0.78rem; padding:3px 10px;">
+                  <i class="fa-solid fa-plus"></i> เพิ่มรูป/ไฟล์อีก
+                </button>
+              </div>
+            </div>
+
+            <div id="submit-dropzone" class="upload-dropzone">
+              <input type="file" id="submit-img-file" accept="image/*,application/pdf,.pdf" multiple style="display:none;" onchange="handleStudentFileSelection(this)">
+              
+              <div id="submit-dropzone-prompt" onclick="document.getElementById('submit-img-file').click()" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:26px 16px; cursor:pointer; text-align:center;">
+                <div style="width:54px; height:54px; border-radius:50%; background:#eff6ff; color:#2563eb; display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin-bottom:10px; box-shadow:0 2px 8px rgba(37,99,235,0.15);">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <div style="font-weight:700; color:#1e293b; font-size:0.98rem; margin-bottom:4px;">
+                  คลิกเพื่อเลือกไฟล์ หรือถ่ายภาพจากกล้อง (เลือกได้มากกว่า 1 ภาพ)
+                </div>
+                <div style="font-size:0.82rem; color:var(--text-muted);">
+                  รองรับรูปภาพหลายรูป (JPG, PNG, WebP) และไฟล์เอกสาร PDF
+                </div>
+              </div>
+
+              <!-- Live Multi-File Preview Gallery (Populated dynamically) -->
+              <div id="submit-preview-container" style="display:none; padding:14px;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer" style="padding:16px 0 0 0; margin-top:18px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-submit-homework')" style="border-radius:10px; padding:8px 18px;">
+            ยกเลิก
+          </button>
+          <button type="submit" class="btn btn-primary" id="btn-do-submit-hw" style="border-radius:10px; padding:8px 24px; font-weight:700; box-shadow:0 4px 14px rgba(37,99,235,0.35);">
+            <i class="fa-solid fa-paper-plane"></i> ยืนยันการส่งงาน
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 6: Teacher Grade Homework Submissions Modal with Room Filter -->
+  <div class="modal-overlay" id="modal-grade-submissions">
+    <div class="modal-container" style="max-width:980px; width:95vw;">
+      <div class="modal-header" style="background:#0f172a; color:#ffffff; border-bottom:3px solid #2563eb; padding:16px 22px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #2563eb, #3b82f6); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.2rem; box-shadow:0 3px 8px rgba(37,99,235,0.4);">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div>
+            <h3 class="modal-title" style="color:#ffffff; margin:0; font-size:1.2rem;"><i class="fa-solid fa-file-signature" style="color:#38bdf8 !important;"></i> ตรวจชิ้นงานและการบ้านนักเรียน</h3>
+            <span style="font-size:0.82rem; color:#94a3b8;" id="grade-hw-subtitle">วิชา... • การบ้าน...</span>
+          </div>
+        </div>
+        <button class="btn-close-modal" style="background:rgba(255,255,255,0.1); color:#fff; border:none;" onclick="closeModal('modal-grade-submissions')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body" style="padding:18px 22px; background:#f8fafc;">
+        <input type="hidden" id="active-grading-hw-id">
+
+        <!-- Top Controls: Room Filter & Stats Summary -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; background:#ffffff; padding:12px 16px; border-radius:14px; border:1px solid #e2e8f0; box-shadow:0 2px 6px rgba(15,23,42,0.02);">
+          
+          <!-- Classroom Filter Dropdown -->
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <label style="font-weight:700; color:#1e293b; font-size:0.9rem; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-filter" style="color:var(--primary);"></i> กรองตามห้องเรียน:
+            </label>
+            <select id="grade-hw-class-filter" class="form-control" style="width:auto; min-width:200px; padding:6px 14px; font-weight:700; border-radius:10px; border-color:#cbd5e1; color:#0f172a;" onchange="renderGradeSubmissionsTable()">
+              <!-- Options populated dynamically -->
+            </select>
+          </div>
+
+          <!-- Quick Submission Stats Pill -->
+          <div id="grade-hw-stats-pill" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <!-- Rendered dynamically e.g. ส่งแล้ว X คน • ตรวจแล้ว Y คน -->
+          </div>
+        </div>
+
+        <!-- Submissions Table -->
+        <div class="table-responsive" style="background:#ffffff; border-radius:14px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(15,23,42,0.03); max-height:55vh; overflow-y:auto;">
+          <table class="table" style="margin:0;">
+            <thead style="position:sticky; top:0; background:#f1f5f9; z-index:1;">
+              <tr>
+                <th style="width:50px; text-align:center;">ลำดับ</th>
+                <th>นักเรียน</th>
+                <th style="text-align:center;">ห้องเรียน</th>
+                <th>วันที่ส่ง</th>
+                <th>คำตอบ / รูปชิ้นงาน</th>
+                <th style="width:130px; text-align:center;">คะแนน</th>
+                <th>คอมเมนต์ครู</th>
+                <th style="text-align:center; width:130px;">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="grade-submissions-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:12px 22px; background:#ffffff; border-top:1px solid #e2e8f0;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-grade-submissions')">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal 7: Create Quiz Builder Modal -->
+  <div class="modal-overlay" id="modal-create-quiz">
+    <div class="modal-container" style="max-width:800px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-square-plus"></i> สร้างแบบทดสอบ / ข้อสอบ</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-create-quiz')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveQuizForm(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">เลือกรายวิชา *</label>
+            <select id="quiz-course-id" class="form-control" style="padding-left:14px;" required onchange="onQuizCourseChange(this.value)">
+              <!-- Options loaded dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+              <span><i class="fa-solid fa-users-rectangle" style="color:var(--primary);"></i> ห้องเรียนเป้าหมาย (เลือกได้มากกว่า 1 ห้อง) *</span>
+              <span style="font-size:0.82rem; font-weight:700; color:var(--primary);" id="quiz-target-summary">ทุกห้องเรียน</span>
+            </label>
+            <div id="quiz-target-chips-container" class="target-class-chips-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ชื่อแบบทดสอบ *</label>
+            <input type="text" id="quiz-title" class="form-control" style="padding-left:14px;" required placeholder="เช่น แบบทดสอบหลังเรียน บทที่ 1">
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">รูปแบบข้อสอบ / ชนิดตัวเลือก *</label>
+              <select id="quiz-type" class="form-control" style="padding-left:14px;" onchange="renderQuizQuestionsBuilder()">
+                <option value="4">ปรนัย 4 ตัวเลือก (ก-ง)</option>
+                <option value="5">ปรนัย 5 ตัวเลือก (ก-จ)</option>
+                <option value="subjective">อัตนัย (เขียน/พิมพ์ตอบ)</option>
+                <option value="mixed">ผสม (ปรนัย + อัตนัย)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">เวลาทำสอบ (นาที) *</label>
+              <input type="number" id="quiz-duration" class="form-control" style="padding-left:14px;" required value="15" min="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">คะแนนผ่าน (%) *</label>
+              <input type="number" id="quiz-pass-score" class="form-control" style="padding-left:14px;" required value="50" min="1" max="100">
+            </div>
+          </div>
+
+          <!-- Dynamic Questions Builder -->
+          <hr style="margin:20px 0; border-color:var(--border);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <h4 style="font-weight:700;"><i class="fa-solid fa-question-circle"></i> รายการคำถามข้อสอบ</h4>
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addQuizQuestionItem()">
+              <i class="fa-solid fa-plus"></i> เพิ่มข้อสอบ
+            </button>
+          </div>
+
+          <div id="quiz-questions-builder-container">
+            <!-- Question item boxes rendered here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-create-quiz')">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> บันทึกข้อสอบ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 7.1: Edit Quiz Builder Modal -->
+  <div class="modal-overlay" id="modal-edit-quiz">
+    <div class="modal-container" style="max-width:800px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-pen-to-square"></i> แก้ไขแบบทดสอบ / ข้อสอบ</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-edit-quiz')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveEditQuizForm(event)">
+        <input type="hidden" id="edit-quiz-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">เลือกรายวิชา *</label>
+            <select id="edit-quiz-course-id" class="form-control" style="padding-left:14px;" required onchange="onEditQuizCourseChange(this.value)">
+              <!-- Options loaded dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+              <span><i class="fa-solid fa-users-rectangle" style="color:var(--primary);"></i> ห้องเรียนเป้าหมาย (เลือกได้มากกว่า 1 ห้อง) *</span>
+              <span style="font-size:0.82rem; font-weight:700; color:var(--primary);" id="edit-quiz-target-summary">ทุกห้องเรียน</span>
+            </label>
+            <div id="edit-quiz-target-chips-container" class="target-class-chips-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ชื่อแบบทดสอบ *</label>
+            <input type="text" id="edit-quiz-title" class="form-control" style="padding-left:14px;" required placeholder="เช่น แบบทดสอบหลังเรียน บทที่ 1">
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;">
+            <div class="form-group">
+              <label class="form-label">รูปแบบข้อสอบ / ชนิดตัวเลือก *</label>
+              <select id="edit-quiz-type" class="form-control" style="padding-left:14px;" onchange="renderEditQuizQuestionsBuilder()">
+                <option value="4">ปรนัย 4 ตัวเลือก (ก-ง)</option>
+                <option value="5">ปรนัย 5 ตัวเลือก (ก-จ)</option>
+                <option value="subjective">อัตนัย (เขียน/พิมพ์ตอบ)</option>
+                <option value="mixed">ผสม (ปรนัย + อัตนัย)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">เวลาทำสอบ (นาที) *</label>
+              <input type="number" id="edit-quiz-duration" class="form-control" style="padding-left:14px;" required value="15" min="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">คะแนนผ่าน (%) *</label>
+              <input type="number" id="edit-quiz-pass-score" class="form-control" style="padding-left:14px;" required value="50" min="1" max="100">
+            </div>
+          </div>
+
+          <!-- Dynamic Questions Builder -->
+          <hr style="margin:20px 0; border-color:var(--border);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <h4 style="font-weight:700;"><i class="fa-solid fa-question-circle"></i> รายการคำถามข้อสอบ</h4>
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addEditQuizQuestionItem()">
+              <i class="fa-solid fa-plus"></i> เพิ่มข้อสอบ
+            </button>
+          </div>
+
+          <div id="edit-quiz-questions-builder-container">
+            <!-- Question item boxes rendered here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-quiz')">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> บันทึกการแก้ไขข้อสอบ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 8: Quiz Runner Modal (Official Academic Exam Environment) -->
+  <div class="modal-overlay" id="modal-take-quiz">
+    <div class="modal-container modal-exam-container">
+      
+      <!-- Academic Examination Header -->
+      <div class="exam-header-bar">
+        <div class="exam-header-main-row">
+          <div class="exam-header-left">
+            <div class="exam-badge-icon">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="exam-header-titles">
+              <div class="exam-meta-pills">
+                <span class="badge badge-exam-course" id="runner-course-name">รายวิชา...</span>
+                <span class="badge badge-exam-academic" id="runner-exam-type"><i class="fa-solid fa-file-lines"></i> แบบทดสอบ</span>
+              </div>
+              <h3 class="exam-title-text" id="runner-quiz-title">แบบทดสอบ</h3>
+            </div>
+          </div>
+
+          <div class="exam-header-right">
+            <!-- Digital Timer Card -->
+            <div class="exam-timer-card" id="exam-timer-card">
+              <div class="exam-timer-label"><i class="fa-regular fa-clock"></i> เวลาที่เหลือ</div>
+              <div class="exam-timer-digits">
+                <span id="quiz-countdown-display">15:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full-Width Candidate Info Bar -->
+        <div class="exam-student-info" id="runner-student-info">
+          <!-- Rendered candidate info -->
+        </div>
+      </div>
+
+      <!-- Exam Progress Bar -->
+      <div class="exam-progress-bar-container">
+        <div class="exam-progress-info">
+          <span><i class="fa-solid fa-list-check" style="color:var(--primary);"></i> ความคืบหน้าการตอบ: <strong id="exam-answered-count" style="color:#2563eb;">0</strong> / <span id="exam-total-count">0</span> ข้อ</span>
+          <span id="exam-progress-percent" style="font-weight:700; color:var(--primary);">0%</span>
+        </div>
+        <div class="exam-progress-track">
+          <div class="exam-progress-fill" id="exam-progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Questions List Body -->
+      <div class="modal-body exam-body" id="quiz-runner-body">
+        <!-- Rendered official exam question cards -->
+      </div>
+
+      <!-- Examination Footer Controls -->
+      <div class="exam-footer-bar">
+        <div class="exam-footer-hint">
+          <i class="fa-solid fa-circle-check" style="color:#10b981;"></i>
+          <span>ตอบข้อสอบครบแล้ว กดส่งกระดาษคำตอบเพื่อบันทึกคะแนน</span>
+        </div>
+        <button type="button" class="btn btn-exam-submit" onclick="submitQuizAnswers(true)">
+          <i class="fa-solid fa-paper-plane"></i> ส่งกระดาษคำตอบ
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal 9: Quiz Result Modal (Official Score Summary) -->
+  <div class="modal-overlay" id="modal-quiz-result">
+    <div class="modal-container modal-exam-container" style="max-width:760px;">
+      <div class="modal-header" style="background:#0f172a; color:#ffffff; border-bottom:3px solid #2563eb; padding:18px 24px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #2563eb, #3b82f6); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.3rem;">
+            <i class="fa-solid fa-square-poll-vertical"></i>
+          </div>
+          <div>
+            <h3 class="modal-title" style="color:#ffffff; margin:0; font-size:1.25rem;"><i class="fa-solid fa-award" style="color:#f59e0b !important;"></i> สรุปผลคะแนนการทำแบบทดสอบ</h3>
+            <span style="font-size:0.82rem; color:#94a3b8;">ระบบตรวจประเมินผลการเรียนรู้อัตโนมัติ (Online Examination Result)</span>
+          </div>
+        </div>
+        <button class="btn-close-modal" style="background:rgba(255,255,255,0.1); color:#fff; border:none;" onclick="closeModal('modal-quiz-result')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body exam-body" style="padding:24px;">
+        <!-- Result Hero Banner -->
+        <div class="exam-result-hero">
+          <div class="exam-result-hero-left">
+            <div style="font-size:0.9rem; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.5px;">คะแนนสอบที่ได้ (Score)</div>
+            <div class="exam-result-score-big" id="res-score-display">0 / 0</div>
+            <div id="res-status-badge" style="margin-top:6px;"></div>
+          </div>
+          <div class="exam-result-hero-right" id="res-stats-summary">
+            <!-- Rendered percentage, correct count, pass requirement -->
+          </div>
+        </div>
+
+        <!-- Academic Submission Confirmation Box -->
+        <div style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:16px; padding:22px 24px; margin-top:16px; text-align:center; box-shadow:0 2px 8px rgba(15,23,42,0.03);">
+          <div style="width:54px; height:54px; border-radius:50%; background:#ecfdf5; color:#059669; font-size:1.5rem; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; box-shadow:0 4px 12px rgba(16,185,129,0.2);">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h4 style="margin:0 0 6px; font-weight:800; color:#0f172a; font-size:1.15rem;">บันทึกผลการทำแบบทดสอบเรียบร้อยแล้ว</h4>
+          <p style="margin:0; font-size:0.92rem; color:#64748b; line-height:1.5;">
+            ระบบได้บันทึกคะแนนสอบของคุณเข้าสู่ฐานข้อมูลรายวิชาเรียบร้อยแล้ว คุณสามารถตรวจสอบรายงานคะแนนสะสมได้ที่เมนู <strong>รายงานคะแนน</strong>
+          </p>
+        </div>
+
+        <!-- Question-by-Question Review Section -->
+        <div id="res-questions-review-section" style="margin-top:20px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <h4 style="font-size:1.05rem; font-weight:800; color:#0f172a; margin:0; display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-list-check" style="color:var(--primary);"></i> ตรวจทานคำตอบและเฉลยรายข้อ
+            </h4>
+          </div>
+          <div id="res-questions-review-container" style="display:flex; flex-direction:column; gap:12px; max-height:48vh; overflow-y:auto; padding-right:4px;">
+            <!-- Review cards dynamically rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-footer-bar" style="justify-content:flex-end;">
+        <button type="button" class="btn btn-primary" onclick="closeModal('modal-quiz-result')" style="border-radius:10px; font-weight:700; padding:9px 24px;">
+          <i class="fa-solid fa-check"></i> ปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal 9.1: Teacher View Quiz Scores & Submissions Modal -->
+  <div class="modal-overlay" id="modal-quiz-scores">
+    <div class="modal-container" style="max-width:960px; width:95vw;">
+      <div class="modal-header" style="background:#0f172a; color:#ffffff; border-bottom:3px solid #2563eb; padding:18px 24px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #2563eb, #3b82f6); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.3rem;">
+            <i class="fa-solid fa-chart-column"></i>
+          </div>
+          <div>
+            <h3 class="modal-title" style="color:#ffffff; margin:0; font-size:1.25rem;"><i class="fa-solid fa-square-poll-vertical" style="color:#38bdf8 !important;"></i> รายงานคะแนนสอบนักเรียน</h3>
+            <span style="font-size:0.82rem; color:#94a3b8;" id="quiz-scores-subtitle">วิชา... • แบบทดสอบ...</span>
+          </div>
+        </div>
+        <button class="btn-close-modal" style="background:rgba(255,255,255,0.1); color:#fff; border:none;" onclick="closeModal('modal-quiz-scores')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body" style="padding:20px 24px; background:#f8fafc;">
+        <input type="hidden" id="active-viewing-quiz-id">
+
+        <!-- Top Controls & Filters Bar -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <!-- Classroom Filter -->
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <label style="font-weight:700; color:#1e293b; font-size:0.9rem; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-filter" style="color:var(--primary);"></i> กรองตามห้องเรียน:
+            </label>
+            <select id="quiz-score-class-filter" class="form-control" style="width:auto; min-width:200px; padding:6px 14px; font-weight:600; border-radius:10px;" onchange="renderQuizScoresTable()">
+              <!-- Options populated dynamically -->
+            </select>
+          </div>
+
+          <!-- Quick Stats Pills -->
+          <div id="quiz-score-summary-pills" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <!-- Rendered stats: ทำแล้ว X คน, คะแนนเฉลี่ย Y, ผ่าน A คน -->
+          </div>
+        </div>
+
+        <!-- Scores Table -->
+        <div class="table-responsive" style="background:#ffffff; border-radius:14px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(15,23,42,0.03); max-height:55vh; overflow-y:auto;">
+          <table class="table" style="margin:0;">
+            <thead style="position:sticky; top:0; background:#f1f5f9; z-index:1;">
+              <tr>
+                <th style="width:60px; text-align:center;">ลำดับ</th>
+                <th style="width:70px; text-align:center;">เลขที่</th>
+                <th>รหัสประจำตัว</th>
+                <th>ชื่อ-นามสกุล</th>
+                <th>ห้องเรียน</th>
+                <th style="text-align:center;">เวลาที่ส่ง</th>
+                <th style="text-align:center;">คะแนนที่ได้</th>
+                <th style="text-align:center;">ร้อยละ</th>
+                <th style="text-align:center;">สถานะ</th>
+                <th style="text-align:center; width:80px;">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="quiz-scores-table-body">
+              <!-- Rendered rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:14px 24px; background:#ffffff; border-top:1px solid #e2e8f0;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-quiz-scores')">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal 9.2: Teacher Grade Quiz Submission Modal (ตรวจและให้คะแนนข้อสอบอัตนัย) -->
+  <div class="modal-overlay" id="modal-grade-quiz">
+    <div class="modal-container modal-exam-container" style="max-width:880px; width:96vw;">
+      <div class="modal-header" style="background:#0f172a; color:#ffffff; border-bottom:3px solid #f59e0b; padding:18px 24px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #f59e0b, #d97706); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.3rem; box-shadow:0 3px 8px rgba(217,119,6,0.4);">
+            <i class="fa-solid fa-file-circle-check"></i>
+          </div>
+          <div>
+            <h3 class="modal-title" style="color:#ffffff; margin:0; font-size:1.25rem;"><i class="fa-solid fa-square-poll-vertical" style="color:#fbbf24 !important;"></i> ตรวจและให้คะแนนแบบทดสอบ</h3>
+            <span style="font-size:0.82rem; color:#cbd5e1;" id="grade-quiz-subtitle">นักเรียน... • แบบทดสอบ...</span>
+          </div>
+        </div>
+        <button class="btn-close-modal" style="background:rgba(255,255,255,0.1); color:#fff; border:none;" onclick="closeModal('modal-grade-quiz')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body exam-body" style="padding:22px 24px; background:#f8fafc;">
+        <input type="hidden" id="active-grading-quiz-id">
+        <input type="hidden" id="active-grading-student-id">
+
+        <!-- Student Info & Submission Details Banner -->
+        <div id="grade-quiz-student-banner" style="background:#ffffff; border-radius:14px; border:1px solid #e2e8f0; padding:16px 20px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; box-shadow:0 2px 6px rgba(15,23,42,0.02);">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Question-by-Question Grading Container -->
+        <div style="margin-bottom:18px;">
+          <h4 style="font-size:1.05rem; font-weight:800; color:#0f172a; margin:0 0 12px; display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-list-check" style="color:var(--primary);"></i> ตรวจกระดาษคำตอบรายข้อ
+          </h4>
+          <div id="quiz-grading-questions-container" style="display:flex; flex-direction:column; gap:14px; max-height:50vh; overflow-y:auto; padding-right:4px;">
+            <!-- Rendered question grading cards -->
+          </div>
+        </div>
+
+        <!-- Overall Feedback & Live Score Summary -->
+        <div style="background:#ffffff; border-radius:14px; border:1.5px solid #e2e8f0; padding:18px 20px; box-shadow:0 2px 8px rgba(15,23,42,0.03);">
+          <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label" style="font-weight:700; color:#1e293b; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-comment-dots" style="color:var(--primary);"></i> ข้อเสนอแนะ / คำแนะนำเพิ่มเติมจากครูผู้สอน:
+            </label>
+            <textarea id="teacher-quiz-overall-feedback" class="form-control" rows="2" placeholder="พิมพ์ข้อคิดเห็นหรือคำชี้แนะให้นักเรียนทราบ (แสดงในหน้ารายงานคะแนนของนักเรียน)..."></textarea>
+          </div>
+
+          <!-- Live Total Score Card -->
+          <div style="background:linear-gradient(135deg, #1e293b, #0f172a); color:#ffffff; border-radius:12px; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+              <div style="font-size:0.8rem; color:#94a3b8; font-weight:700; text-transform:uppercase;">คะแนนรวมที่ได้ (Total Score)</div>
+              <div style="display:flex; align-items:baseline; gap:8px; margin-top:2px;">
+                <span id="teacher-grading-live-score" style="font-size:1.8rem; font-weight:900; color:#60a5fa;">0</span>
+                <span style="font-size:1.1rem; color:#94a3b8; font-weight:700;">/ <span id="teacher-grading-live-max">0</span> คะแนน</span>
+                <span id="teacher-grading-live-pct" style="font-size:1rem; font-weight:800; color:#fbbf24; margin-left:8px;">(0%)</span>
+              </div>
+            </div>
+            <div id="teacher-grading-live-status">
+              <!-- Live Pass/Fail Badge -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:14px 24px; background:#ffffff; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-grade-quiz')" style="border-radius:10px; font-weight:700; padding:8px 18px;">ยกเลิก</button>
+        <button type="button" class="btn btn-primary" onclick="saveTeacherQuizGrading()" style="border-radius:10px; font-weight:800; padding:9px 24px; background:#2563eb; box-shadow:0 4px 12px rgba(37,99,235,0.3);">
+          <i class="fa-solid fa-floppy-disk"></i> บันทึกผลการตรวจให้คะแนน
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal 10: Announcement Modal -->
+  <div class="modal-overlay" id="modal-announcement">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-bullhorn"></i> ประกาศข่าวสารห้องเรียน</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-announcement')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveAnnouncementForm(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">หัวข้อประกาศ *</label>
+            <input type="text" id="announce-title" class="form-control" style="padding-left:14px;" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">เนื้อหาประกาศ *</label>
+            <textarea id="announce-body" class="form-control" style="padding-left:14px; height:100px;" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-announcement')">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> บันทึกประกาศ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 11: Add User Modal -->
+  <div class="modal-overlay" id="modal-add-user">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-user-plus"></i> เพิ่มผู้ใช้งานในระบบ</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-add-user')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveUserForm(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">สิทธิ์ / บทบาท *</label>
+            <select id="new-user-role" class="form-control" style="padding-left:14px;" required onchange="toggleUserFormFields()">
+              <option value="teacher">ครูผู้สอน / บุคลากร</option>
+              <option value="admin">ผู้ดูแลระบบ (Admin)</option>
+              <option value="student">นักเรียน (Student)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ชื่อผู้ใช้งาน (Username) *</label>
+            <input type="text" id="new-username" class="form-control" style="padding-left:14px;" required placeholder="เบอร์โทร หรือ รหัสประจำตัว">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ชื่อ - สกุล *</label>
+            <input type="text" id="new-user-fullname" class="form-control" style="padding-left:14px;" required placeholder="ชื่อ-นามสกุล">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">รหัสผ่าน (Password) *</label>
+            <input type="password" id="new-user-password" class="form-control" style="padding-left:14px;" required placeholder="ตั้งรหัสผ่าน">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-user')">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> สร้างบัญชี</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 12: Change Password Modal -->
+  <div class="modal-overlay" id="modal-change-password">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-key"></i> เปลี่ยนรหัสผ่านผู้ใช้งาน</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-change-password')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveChangePassword(event)">
+        <input type="hidden" id="change-pwd-username">
+        <div class="modal-body">
+          <p style="margin-bottom:14px; font-weight:600;" id="change-pwd-target-info">ผู้ใช้งาน: ...</p>
+          <div class="form-group">
+            <label class="form-label">รหัสผ่านใหม่ *</label>
+            <input type="password" id="target-new-password" class="form-control" style="padding-left:14px;" required placeholder="กรอกรหัสผ่านใหม่">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-change-password')">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> บันทึกรหัสผ่านใหม่</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal 13: Universal Canvas PDF & File Preview Modal -->
+  <div class="modal-overlay" id="modal-file-preview">
+    <div class="modal-container" style="max-width:980px; width:95vw; background:#ffffff; border-radius:22px; padding:18px 20px; max-height:92vh; display:flex; flex-direction:column;">
+      
+      <!-- Modal Header -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:12px; border-bottom:1.5px solid var(--border); flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px; min-width:200px; flex:1;">
+          <div style="width:38px; height:38px; border-radius:10px; background:#fef2f2; border:1px solid #fecaca; display:flex; align-items:center; justify-content:center; color:#ef4444; font-size:1.15rem;">
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <div>
+            <h4 class="modal-title" id="file-preview-title" style="margin:0; font-size:1.1rem; font-weight:800; color:#0f172a; max-width:50vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">เอกสารแนบคำสั่งงาน</h4>
+            <span id="pdf-page-count-info" style="font-size:0.8rem; color:#64748b; font-weight:600;"></span>
+          </div>
+        </div>
+
+        <!-- Controls & Action Buttons -->
+        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+          <!-- Zoom Controls -->
+          <div id="pdf-zoom-controls" style="display:none; align-items:center; background:#f1f5f9; border-radius:10px; padding:2px 6px; border:1px solid #e2e8f0; margin-right:4px;">
+            <button type="button" class="btn btn-sm" onclick="zoomPdf(-0.2)" title="ย่อขนาด" style="padding:4px 8px; font-weight:800; color:#334155; border:none; background:transparent;">
+              <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </button>
+            <span id="pdf-zoom-level-text" style="font-size:0.8rem; font-weight:700; color:#334155; padding:0 4px; min-width:42px; text-align:center;">100%</span>
+            <button type="button" class="btn btn-sm" onclick="zoomPdf(0.2)" title="ขยายขนาด" style="padding:4px 8px; font-weight:800; color:#334155; border:none; background:transparent;">
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </button>
+            <button type="button" class="btn btn-sm" onclick="resetPdfZoom()" title="พอดีหน้าจอ" style="padding:4px 8px; font-weight:700; color:#2563eb; border:none; background:transparent;">
+              <i class="fa-solid fa-expand"></i>
+            </button>
+          </div>
+
+          <a id="file-preview-download" href="#" class="btn btn-sm btn-success" download="document.pdf" style="border-radius:10px; font-weight:700;">
+            <i class="fa-solid fa-download"></i> ดาวน์โหลด
+          </a>
+          <button type="button" class="btn btn-sm btn-primary" onclick="openPdfInNewTab()" id="file-preview-newtab-btn" style="border-radius:10px; font-weight:700;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดแท็บใหม่
+          </button>
+          <button type="button" class="btn btn-sm btn-danger" onclick="closeModal('modal-file-preview')" style="border-radius:10px; font-weight:700;">
+            <i class="fa-solid fa-xmark"></i> ปิด
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Body Container -->
+      <div id="file-preview-body" style="flex:1; min-height:460px; max-height:76vh; overflow-y:auto; overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:14px; background:#475569; padding:12px; display:flex; flex-direction:column; align-items:center; position:relative;">
+        <!-- Canvas pages rendered here dynamically via PDF.js -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal 14: iPad / Tablet Interactive Drawing, Handwriting & Coloring Studio Modal -->
+  <div class="modal-overlay" id="modal-homework-canvas" style="z-index: 2200;">
+    <div class="modal-container drawing-studio-modal-container" id="drawing-studio-container">
+      
+      <!-- Studio Top Header -->
+      <div class="drawing-studio-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, #4f46e5, #db2777); display:flex; align-items:center; justify-content:center; color:#ffffff; font-size:1.1rem; box-shadow:0 2px 8px rgba(219,39,119,0.4);">
+            <i class="fa-solid fa-palette"></i>
+          </div>
+          <div>
+            <h4 style="margin:0; font-size:1.05rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:8px;">
+              <span>กระดานเขียนงาน & วาดภาพระบายสี (iPad Studio)</span>
+              <span id="hw-canvas-sheet-badge" class="badge badge-purple" style="font-size:0.74rem; padding:2px 8px;">แผ่นที่ 1</span>
+            </h4>
+            <div id="hw-canvas-subtitle" style="font-size:0.78rem; color:#94a3b8;">เขียนด้วยลายมือ วาดรูปทรง และระบายสีส่งครูได้โดยตรง</div>
+          </div>
+        </div>
+
+        <!-- Paper Templates, Teacher Worksheet Overlay & Window Actions -->
+        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <!-- Paper Style Selector -->
+          <div style="display:flex; align-items:center; background:#0f172a; padding:3px; border-radius:10px; border:1px solid #334155; gap:3px;">
+            <button type="button" class="btn btn-sm hw-paper-btn active" id="btn-paper-blank" onclick="setHwCanvasPaper('blank')" style="padding:4px 9px; font-size:0.76rem; font-weight:700; border-radius:7px; background:#2563eb; color:#fff; border:none;" title="กระดาษขาว">
+              <i class="fa-regular fa-file"></i> กระดาษขาว
+            </button>
+            <button type="button" class="btn btn-sm hw-paper-btn" id="btn-paper-lined" onclick="setHwCanvasPaper('lined')" style="padding:4px 9px; font-size:0.76rem; font-weight:700; border-radius:7px; background:transparent; color:#cbd5e1; border:none;" title="กระดาษมีเส้นบรรทัดสำหรับเขียนข้อความ">
+              <i class="fa-solid fa-align-justify"></i> เส้นบรรทัด
+            </button>
+            <button type="button" class="btn btn-sm hw-paper-btn" id="btn-paper-grid" onclick="setHwCanvasPaper('grid')" style="padding:4px 9px; font-size:0.76rem; font-weight:700; border-radius:7px; background:transparent; color:#cbd5e1; border:none;" title="กระดาษตารางกริดสำหรับวาดผังงาน/รูปทรง">
+              <i class="fa-solid fa-border-all"></i> ตารางกริด
+            </button>
+          </div>
+
+          <!-- Orientation Toggle (Landscape vs Portrait A4) -->
+          <button type="button" class="btn btn-sm" id="btn-canvas-orientation" onclick="toggleHwCanvasOrientation()" style="background:#334155; color:#f8fafc; border:1px solid #475569; border-radius:9px; padding:5px 10px; font-size:0.76rem; font-weight:700;" title="สลับกระดาษแนวนอน / แนวตั้ง">
+            <i class="fa-solid fa-rotate"></i> <span id="hw-orientation-label">แนวนอน</span>
+          </button>
+
+          <!-- Teacher Worksheet Loader Button (Shown when homework has PDF/Image) -->
+          <button type="button" class="btn btn-sm" id="btn-load-teacher-worksheet" onclick="loadTeacherWorksheetToCanvas()" style="display:none; background:linear-gradient(135deg, #d97706, #ea580c); color:#ffffff; border:none; border-radius:9px; padding:5px 11px; font-size:0.78rem; font-weight:800; box-shadow:0 2px 8px rgba(234,88,12,0.35);" title="ดึงรูปหรือไฟล์ PDF โจทย์ของครูมาเป็นพื้นหลังเพื่อเขียนตอบทับ">
+            <i class="fa-solid fa-file-import"></i> ดึงใบงานครูมาเขียนทับ
+          </button>
+
+          <!-- PDF Page Selector when teacher worksheet is multi-page PDF -->
+          <div id="hw-worksheet-pdf-pager" style="display:none; align-items:center; gap:4px; background:#0f172a; padding:3px 8px; border-radius:9px; border:1px solid #475569;">
+            <button type="button" class="btn btn-sm" onclick="changeWorksheetPdfPage(-1)" style="padding:2px 6px; background:#334155; color:#fff; border:none; border-radius:6px; font-size:0.75rem;"><i class="fa-solid fa-chevron-left"></i></button>
+            <span id="hw-worksheet-pdf-page-text" style="font-size:0.75rem; font-weight:700; color:#f8fafc; padding:0 4px;">หน้า 1/1</span>
+            <button type="button" class="btn btn-sm" onclick="changeWorksheetPdfPage(1)" style="padding:2px 6px; background:#334155; color:#fff; border:none; border-radius:6px; font-size:0.75rem;"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+
+          <!-- Custom Background Image Upload -->
+          <input type="file" id="hw-canvas-bg-upload" accept="image/*" style="display:none;" onchange="handleCustomCanvasBgUpload(this)">
+          <button type="button" class="btn btn-sm" onclick="document.getElementById('hw-canvas-bg-upload').click()" style="background:#334155; color:#e2e8f0; border:1px solid #475569; border-radius:9px; padding:5px 10px; font-size:0.76rem; font-weight:700;" title="นำเข้ารูปภาพจากเครื่องมาวาดหรือระบายสีทับ">
+            <i class="fa-regular fa-image"></i> นำเข้ารูปพื้นหลัง
+          </button>
+
+          <!-- Fullscreen Toggle -->
+          <button type="button" class="btn btn-sm" onclick="toggleHwCanvasFullscreen()" style="background:#334155; color:#ffffff; border:none; border-radius:9px; padding:5px 10px; font-size:0.8rem;" title="ขยายเต็มจอ / ย่อหน้าต่าง">
+            <i class="fa-solid fa-expand" id="hw-fullscreen-icon"></i>
+          </button>
+
+          <!-- Close Button -->
+          <button type="button" class="btn btn-sm btn-danger" onclick="closeModal('modal-homework-canvas')" style="border-radius:9px; padding:5px 11px; font-weight:800; font-size:0.8rem;">
+            <i class="fa-solid fa-xmark"></i> ปิด
+          </button>
+        </div>
+      </div>
+
+      <!-- Multi-Sheet Page Switcher Bar (สลับกลับไปแก้ไขแผ่นกระดาษเก่า หรือเพิ่มแผ่นใหม่ได้ตลอดเวลา) -->
+      <div class="hw-sheets-nav-bar" id="hw-sheets-nav-bar">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span style="font-size:0.78rem; font-weight:800; color:#94a3b8; display:inline-flex; align-items:center; gap:5px;">
+            <i class="fa-solid fa-layer-group" style="color:#38bdf8;"></i> หน้ากระดาษของคุณ (คลิกสลับหน้าเพื่อกลับไปแก้ไขแผ่นเก่าได้):
+          </span>
+          <button type="button" class="btn btn-sm" id="btn-prev-hw-sheet" onclick="switchToPrevHwSheet()" style="background:#1e293b; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:3px 9px; font-size:0.76rem; font-weight:700;" title="กลับไปแผ่นก่อนหน้า">
+            <i class="fa-solid fa-chevron-left"></i> แผ่นก่อนหน้า
+          </button>
+          <div class="hw-sheets-tabs-list" id="hw-sheets-tabs-list">
+            <!-- Rendered dynamically: แผ่นที่ 1, แผ่นที่ 2, ... -->
+          </div>
+          <button type="button" class="btn btn-sm" id="btn-next-hw-sheet" onclick="switchToNextHwSheet()" style="background:#1e293b; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:3px 9px; font-size:0.76rem; font-weight:700;" title="ไปแผ่นถัดไป">
+            แผ่นถัดไป <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button type="button" class="btn btn-sm" onclick="saveHwCanvasAndNewPage()" style="background:linear-gradient(135deg, #0284c7, #2563eb); color:#ffffff; border:none; border-radius:8px; padding:4px 12px; font-size:0.78rem; font-weight:800; box-shadow:0 2px 8px rgba(37,99,235,0.35);">
+            <i class="fa-solid fa-plus"></i> เพิ่มแผ่นกระดาษใหม่
+          </button>
+        </div>
+      </div>
+
+      <!-- Studio Drawing & Coloring Toolbar -->
+      <div class="drawing-studio-toolbar">
+        
+        <!-- 1. Main Writing & Coloring Tools -->
+        <div class="draw-tool-group" title="เครื่องมือเขียน วาด และระบายสี">
+          <button type="button" class="draw-tool-btn active" data-tool="pen" onclick="selectHwDrawTool('pen')" title="ปากกาเขียนข้อความ (เส้นคมชัด)">
+            <i class="fa-solid fa-pen-fancy" style="color:#2563eb;"></i> <span class="tool-label-text">ปากกา</span>
+          </button>
+          <button type="button" class="draw-tool-btn" data-tool="select" onclick="selectHwDrawTool('select')" title="เลือก / ขยับย้ายตำแหน่ง หรือปรับขนาดรูปทรง Flowchart ที่วาดไปแล้ว">
+            <i class="fa-solid fa-arrows-up-down-left-right" style="color:#4f46e5;"></i> <span class="tool-label-text">ขยับรูปทรง</span>
+          </button>
+          <button type="button" class="draw-tool-btn" data-tool="brush" onclick="selectHwDrawTool('brush')" title="พู่กันระบายสี (เส้นนุ่ม)">
+            <i class="fa-solid fa-paintbrush" style="color:#7c3aed;"></i> <span class="tool-label-text">พู่กันระบายสี</span>
+          </button>
+          <button type="button" class="draw-tool-btn" data-tool="highlighter" onclick="selectHwDrawTool('highlighter')" title="ปากกาไฮไลท์ระบายสีโปร่งแสง (ไม่บังเส้นเดิม)">
+            <i class="fa-solid fa-highlighter" style="color:#d97706;"></i> <span class="tool-label-text">สีไฮไลท์</span>
+          </button>
+          <button type="button" class="draw-tool-btn" data-tool="bucket" onclick="selectHwDrawTool('bucket')" title="ถังเทสี (แตะเพื่อเทสีลงในพื้นที่ปิด หรือเทสีในรูปทรง Flowchart)">
+            <i class="fa-solid fa-fill-drip" style="color:#db2777;"></i> <span class="tool-label-text">ถังเทสี</span>
+          </button>
+          <button type="button" class="draw-tool-btn" data-tool="text" onclick="selectHwDrawTool('text')" title="พิมพ์ตัวอักษรลงบนกระดาน">
+            <i class="fa-solid fa-font" style="color:#059669;"></i> <span class="tool-label-text">ข้อความ</span>
+          </button>
+          <button type="button" class="draw-tool-btn" data-tool="eraser" onclick="selectHwDrawTool('eraser')" title="ยางลบ (ลบเฉพาะเส้นที่วาด ไม่ลบพื้นหลัง)">
+            <i class="fa-solid fa-eraser" style="color:#ef4444;"></i> <span class="tool-label-text">ยางลบ</span>
+          </button>
+        </div>
+
+        <!-- 2. Flowchart Menu Toggle Button -->
+        <div class="draw-tool-group" title="เปิด/ซ่อน เมนูรูปทรงในการวาดผังงาน Flowchart">
+          <button type="button" class="draw-tool-btn active" id="btn-toggle-flowchart-menu" onclick="toggleFlowchartMenuBar()" style="font-weight:800;">
+            <i class="fa-solid fa-diagram-project" style="color:#4f46e5;"></i> <span>เมนูรูปทรง Flowchart</span> <i class="fa-solid fa-chevron-up" id="fc-menu-caret" style="font-size:0.7rem;"></i>
+          </button>
+        </div>
+
+        <!-- 3. Color Palette & Custom Color Picker -->
+        <div class="draw-tool-group" id="hw-color-palette-group" style="gap:5px; padding:4px 8px;">
+          <button type="button" class="draw-color-swatch active" data-color="#0f172a" style="background:#0f172a;" onclick="selectHwDrawColor('#0f172a', this)" title="สีดำ"></button>
+          <button type="button" class="draw-color-swatch" data-color="#2563eb" style="background:#2563eb;" onclick="selectHwDrawColor('#2563eb', this)" title="สีน้ำเงิน"></button>
+          <button type="button" class="draw-color-swatch" data-color="#ef4444" style="background:#ef4444;" onclick="selectHwDrawColor('#ef4444', this)" title="สีแดง"></button>
+          <button type="button" class="draw-color-swatch" data-color="#10b981" style="background:#10b981;" onclick="selectHwDrawColor('#10b981', this)" title="สีเขียว"></button>
+          <button type="button" class="draw-color-swatch" data-color="#f59e0b" style="background:#f59e0b;" onclick="selectHwDrawColor('#f59e0b', this)" title="สีส้มเหลือง"></button>
+          <button type="button" class="draw-color-swatch" data-color="#fde047" style="background:#fde047;" onclick="selectHwDrawColor('#fde047', this)" title="สีเหลืองไฮไลท์"></button>
+          <button type="button" class="draw-color-swatch" data-color="#8b5cf6" style="background:#8b5cf6;" onclick="selectHwDrawColor('#8b5cf6', this)" title="สีม่วง"></button>
+          <button type="button" class="draw-color-swatch" data-color="#ec4899" style="background:#ec4899;" onclick="selectHwDrawColor('#ec4899', this)" title="สีชมพู"></button>
+          <button type="button" class="draw-color-swatch" data-color="#06b6d4" style="background:#06b6d4;" onclick="selectHwDrawColor('#06b6d4', this)" title="สีฟ้า"></button>
+          <button type="button" class="draw-color-swatch" data-color="#854d0e" style="background:#854d0e;" onclick="selectHwDrawColor('#854d0e', this)" title="สีน้ำตาล"></button>
+          <button type="button" class="draw-color-swatch" data-color="#ffffff" style="background:#ffffff; border-color:#94a3b8;" onclick="selectHwDrawColor('#ffffff', this)" title="สีขาว"></button>
+          <label style="display:inline-flex; align-items:center; gap:3px; cursor:pointer; margin-left:2px;" title="เลือกสีผสมเองตามต้องการ">
+            <input type="color" id="hw-custom-color-picker" value="#0f172a" onchange="selectHwDrawColor(this.value, null)" style="width:28px; height:28px; padding:0; border:none; border-radius:6px; cursor:pointer; background:transparent;">
+          </label>
+        </div>
+
+        <!-- 4. Brush Size Slider -->
+        <div class="draw-tool-group" style="padding:4px 10px; gap:6px;">
+          <i class="fa-solid fa-circle" style="font-size:0.55rem; color:#64748b;"></i>
+          <input type="range" id="hw-stroke-size" min="1" max="45" value="4" oninput="updateHwStrokeSizeLabel(this.value)" style="width:85px; accent-color:#2563eb; cursor:pointer;">
+          <span id="hw-stroke-size-val" style="font-size:0.78rem; font-weight:800; color:#1e293b; min-width:32px; text-align:center;">4px</span>
+        </div>
+
+        <!-- 5. Pan / Undo / Redo / Clear -->
+        <div class="draw-tool-group" style="margin-left:auto;">
+          <button type="button" class="draw-tool-btn" data-tool="pan" onclick="selectHwDrawTool('pan')" title="โหมดเลื่อนหน้ากระดาษบน iPad (แตะลากเพื่อเลื่อนดูหน้ากระดาษ)">
+            <i class="fa-solid fa-hand" style="color:#0284c7;"></i> <span class="tool-label-text">เลื่อนกระดาษ</span>
+          </button>
+          <button type="button" class="draw-tool-btn" onclick="undoHwCanvas()" title="ย้อนกลับ (Undo)">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          <button type="button" class="draw-tool-btn" onclick="redoHwCanvas()" title="ทำซ้ำ (Redo)">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+          <button type="button" class="draw-tool-btn" onclick="clearHwCanvasConfirm()" style="color:#dc2626;" title="ล้างเส้นที่วาดทั้งหมดในหน้านี้">
+            <i class="fa-solid fa-trash-can"></i> <span class="tool-label-text">ล้างหน้า</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dedicated Flowchart Shapes Menu Bar (เมนูรูปทรงในการวาดผังงาน Flowchart) -->
+      <div class="flowchart-shapes-menubar" id="hw-flowchart-menubar">
+        <span class="flowchart-menu-title">
+          <i class="fa-solid fa-diagram-project" style="color:#4f46e5;"></i> รูปทรง Flowchart:
+        </span>
+
+        <!-- Move / Edit Shape Button right inside Flowchart menu -->
+        <button type="button" class="fc-shape-btn" data-tool="select" onclick="selectHwDrawTool('select')" style="border-color:#818cf8; background:#eef2ff; color:#3730a3;" title="แตะลากรูปทรง Flowchart ที่วาดไปแล้วเพื่อขยับซ้าย-ขวา-บน-ล่าง หรือดึงมุมเพื่อปรับขนาด">
+          <i class="fa-solid fa-arrows-up-down-left-right" style="color:#4f46e5;"></i>
+          <span>ขยับ/แก้ไขรูปทรง</span>
+        </button>
+
+        <!-- 1. Terminator (Start / End) -->
+        <button type="button" class="fc-shape-btn" data-tool="fc-terminator" onclick="selectHwDrawTool('fc-terminator')" title="เริ่มต้น / สิ้นสุด (Start / End - Terminator)">
+          <svg viewBox="0 0 28 18"><rect x="2" y="2" width="24" height="14" rx="7" ry="7"/></svg>
+          <span>เริ่มต้น/สิ้นสุด</span>
+        </button>
+
+        <!-- 2. Process (Rectangle) -->
+        <button type="button" class="fc-shape-btn" data-tool="rect" onclick="selectHwDrawTool('rect')" title="การประมวลผล / คำนวณ (Process)">
+          <svg viewBox="0 0 28 18"><rect x="2" y="2" width="24" height="14" rx="1" ry="1"/></svg>
+          <span>ประมวลผล</span>
+        </button>
+
+        <!-- 3. Input / Output (Parallelogram) -->
+        <button type="button" class="fc-shape-btn" data-tool="fc-io" onclick="selectHwDrawTool('fc-io')" title="รับข้อมูล / แสดงผลทั่วไป (Input / Output)">
+          <svg viewBox="0 0 28 18"><polygon points="6,2 26,2 22,16 2,16"/></svg>
+          <span>รับค่า/แสดงผล</span>
+        </button>
+
+        <!-- 4. Decision (Diamond) -->
+        <button type="button" class="fc-shape-btn" data-tool="diamond" onclick="selectHwDrawTool('diamond')" title="การตัดสินใจ / เงื่อนไขทางเลือก (Decision)">
+          <svg viewBox="0 0 28 18"><polygon points="14,1 26,9 14,17 2,9"/></svg>
+          <span>การตัดสินใจ</span>
+        </button>
+
+        <!-- 5. Manual Input (Keyboard) -->
+        <button type="button" class="fc-shape-btn" data-tool="fc-manual-input" onclick="selectHwDrawTool('fc-manual-input')" title="รับข้อมูลผ่านแป้นพิมพ์ (Manual Input)">
+          <svg viewBox="0 0 28 18"><polygon points="2,6 26,2 26,16 2,16"/></svg>
+          <span>รับค่าแป้นพิมพ์</span>
+        </button>
+
+        <!-- 6. Display (Monitor Screen) -->
+        <button type="button" class="fc-shape-btn" data-tool="fc-display" onclick="selectHwDrawTool('fc-display')" title="แสดงผลทางหน้าจอ (Display)">
+          <svg viewBox="0 0 28 18"><path d="M 7,2 L 21,2 Q 26,9 21,16 L 7,16 L 2,9 Z"/></svg>
+          <span>แสดงผลหน้าจอ</span>
+        </button>
+
+        <!-- 7. Document (Printout) -->
+        <button type="button" class="fc-shape-btn" data-tool="fc-document" onclick="selectHwDrawTool('fc-document')" title="แสดงผลทางเครื่องพิมพ์ / เอกสาร (Document)">
+          <svg viewBox="0 0 28 18"><path d="M 2,2 L 26,2 L 26,13 Q 20,18 14,14 Q 8,10 2,15 Z"/></svg>
+          <span>พิมพ์เอกสาร</span>
+        </button>
+
+        <!-- 8. Predefined Process (Subroutine) -->
+        <button type="button" class="fc-shape-btn" data-tool="fc-subroutine" onclick="selectHwDrawTool('fc-subroutine')" title="โปรแกรมย่อย / ฟังก์ชัน (Predefined Process / Subroutine)">
+          <svg viewBox="0 0 28 18"><rect x="2" y="2" width="24" height="14"/><line x1="6" y1="2" x2="6" y2="16"/><line x1="22" y1="2" x2="22" y2="16"/></svg>
+          <span>โปรแกรมย่อย</span>
+        </button>
+
+        <!-- 9. On-page Connector (Circle) -->
+        <button type="button" class="fc-shape-btn" data-tool="circle" onclick="selectHwDrawTool('circle')" title="จุดเชื่อมต่อในหน้าเดียวกัน (On-page Connector)">
+          <svg viewBox="0 0 28 18"><circle cx="14" cy="9" r="7"/></svg>
+          <span>จุดเชื่อมต่อ</span>
+        </button>
+
+        <!-- 10. Off-page Connector (Pentagon Down) -->
+        <button type="button" class="fc-shape-btn" data-tool="fc-offpage" onclick="selectHwDrawTool('fc-offpage')" title="จุดเชื่อมต่อต่างหน้า (Off-page Connector)">
+          <svg viewBox="0 0 28 18"><polygon points="4,2 24,2 24,11 14,17 4,11"/></svg>
+          <span>เชื่อมต่อต่างหน้า</span>
+        </button>
+
+        <!-- 11. Flowline Arrow -->
+        <button type="button" class="fc-shape-btn" data-tool="arrow" onclick="selectHwDrawTool('arrow')" title="ลูกศรทิศทางการไหลของผังงาน (Flowline Arrow)">
+          <svg viewBox="0 0 28 18"><line x1="2" y1="9" x2="24" y2="9"/><polyline points="18,4 24,9 18,14" fill="none"/></svg>
+          <span>ลูกศรทิศทาง</span>
+        </button>
+
+        <!-- 12. Connector Line -->
+        <button type="button" class="fc-shape-btn" data-tool="line" onclick="selectHwDrawTool('line')" title="เส้นตรงเชื่อมต่อ (Connector Line)">
+          <svg viewBox="0 0 28 18"><line x1="3" y1="15" x2="25" y2="3"/></svg>
+          <span>เส้นตรง</span>
+        </button>
+
+        <!-- Shape Fill & Auto-Text Options -->
+        <div style="display:inline-flex; align-items:center; gap:8px; margin-left:auto; background:#ffffff; padding:3px 10px; border-radius:8px; border:1px solid #cbd5e1;">
+          <label style="display:inline-flex; align-items:center; gap:4px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer;" title="เติมสีพื้นด้านในรูปทรง Flowchart">
+            <input type="checkbox" id="hw-shape-fill-toggle" checked onchange="toggleSelectedShapeFill(this.checked)" style="accent-color:#2563eb; width:14px; height:14px; cursor:pointer;"> เติมสีพื้นรูปทรง
+          </label>
+          <label style="display:inline-flex; align-items:center; gap:4px; font-size:0.75rem; font-weight:700; color:#334155; cursor:pointer;" title="เมื่อวาดรูปทรง Flowchart เสร็จ จะเปิดช่องพิมพ์ข้อความในรูปทรงให้อัตโนมัติ">
+            <input type="checkbox" id="hw-shape-auto-text-toggle" style="accent-color:#4f46e5; width:14px; height:14px; cursor:pointer;"> พิมพ์ข้อความในรูปทรงอัตโนมัติ
+          </label>
+        </div>
+      </div>
+
+      <!-- Studio Interactive Canvas Stage -->
+      <div class="drawing-studio-workspace" id="hw-canvas-workspace">
+        <!-- Pen-Only Alert Toast when finger touches paper -->
+        <div id="hw-pen-only-toast" class="pen-only-toast-banner">
+          <i class="fa-solid fa-pen-nib" style="color:#38bdf8;"></i>
+          <span>ในแผ่นกระดาษรองรับการขีดเขียนด้วย <strong>ปากกา (Apple Pencil / Stylus)</strong> เท่านั้น</span>
+        </div>
+
+        <div class="drawing-canvas-stage" id="hw-canvas-stage" style="width: 1100px; height: 780px;">
+          <!-- Layer 1: Background Paper / Teacher Worksheet Layer -->
+          <canvas id="hw-bg-canvas" class="drawing-canvas-layer" width="1100" height="780"></canvas>
+          <!-- Layer 2: Student Freehand Ink & Flood Fill Layer -->
+          <canvas id="hw-draw-canvas" class="drawing-canvas-layer" width="1100" height="780"></canvas>
+          <!-- Layer 3: Interactive Vector Flowchart Shapes Layer (Movable & Resizable) -->
+          <canvas id="hw-shape-canvas" class="drawing-canvas-layer" width="1100" height="780" style="pointer-events:none;"></canvas>
+
+          <!-- Floating Inline Text Input Box (Appears when using Text Tool or editing Flowchart Shape label) -->
+          <div id="hw-floating-text-box" class="floating-canvas-text-editor">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.76rem; font-weight:800; color:#1e293b;">
+              <span id="hw-floating-text-title"><i class="fa-solid fa-font" style="color:#2563eb;"></i> พิมพ์ข้อความลงบนกระดาน</span>
+              <select id="hw-floating-text-size" style="border:1px solid #cbd5e1; border-radius:6px; padding:1px 4px; font-size:0.75rem; font-weight:700;">
+                <option value="20">ขนาดเล็ก (20px)</option>
+                <option value="26" selected>ขนาดกลาง (26px)</option>
+                <option value="34">ขนาดใหญ่ (34px)</option>
+                <option value="46">หัวข้อใหญ่ (46px)</option>
+              </select>
+            </div>
+            <textarea id="hw-floating-text-input" placeholder="พิมพ์ข้อความที่นี่..."></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:6px;">
+              <button type="button" class="btn btn-sm btn-secondary" onclick="cancelHwFloatingText()" style="padding:3px 10px; font-size:0.76rem; border-radius:6px;">ยกเลิก</button>
+              <button type="button" class="btn btn-sm btn-primary" onclick="commitHwFloatingText()" style="padding:3px 12px; font-size:0.76rem; font-weight:700; border-radius:6px;"><i class="fa-solid fa-check"></i> วางข้อความ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Studio Footer -->
+      <div class="drawing-studio-footer">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:4px; background:#0f172a; padding:3px 8px; border-radius:9px; border:1px solid #334155;">
+            <button type="button" class="btn btn-sm" onclick="zoomHwCanvasStage(-0.15)" style="background:transparent; color:#cbd5e1; border:none; padding:2px 6px;" title="ย่อกระดาน"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+            <span id="hw-canvas-zoom-label" style="font-size:0.78rem; font-weight:700; color:#f8fafc; min-width:44px; text-align:center;">100%</span>
+            <button type="button" class="btn btn-sm" onclick="zoomHwCanvasStage(0.15)" style="background:transparent; color:#cbd5e1; border:none; padding:2px 6px;" title="ขยายกระดาน"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+            <button type="button" class="btn btn-sm" onclick="fitHwCanvasStage()" style="background:#334155; color:#38bdf8; border:none; border-radius:6px; padding:2px 8px; font-size:0.74rem; font-weight:700;" title="ปรับขนาดพอดีหน้าจอ iPad">พอดีจอ</button>
+          </div>
+          <span class="badge badge-blue" style="font-size:0.78rem; font-weight:700; padding:5px 10px; background:rgba(37,99,235,0.22); color:#93c5fd; border:1px solid #3b82f6;">
+            <i class="fa-solid fa-arrows-up-down-left-right" style="color:#38bdf8;"></i> แตะลากที่รูปทรง Flowchart เพื่อขยับซ้าย-ขวา-บน-ล่าง หรือปรับขนาดได้ตลอดเวลา
+          </span>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-sm" onclick="downloadHwCanvasImage()" style="background:#334155; color:#f8fafc; border:1px solid #475569; border-radius:10px; padding:8px 14px; font-weight:700; font-size:0.84rem;" title="ดาวน์โหลดรูปแผ่นนี้เก็บไว้ในเครื่อง">
+            <i class="fa-solid fa-download"></i> บันทึกรูปลงเครื่อง
+          </button>
+          <button type="button" class="btn btn-sm" onclick="saveHwCanvasAndNewPage()" style="background:linear-gradient(135deg, #0284c7, #2563eb); color:#ffffff; border:none; border-radius:10px; padding:8px 16px; font-weight:800; font-size:0.86rem; box-shadow:0 3px 10px rgba(37,99,235,0.35);" title="บันทึกแผ่นนี้ไว้ แล้วเพิ่มแผ่นใหม่ (สามารถกดสลับกลับมาแก้ไขแผ่นเก่าได้ตลอด)">
+            <i class="fa-solid fa-file-circle-plus"></i> บันทึกแผ่นนี้ & เพิ่มหน้าถัดไป
+          </button>
+          <button type="button" class="btn btn-sm" onclick="saveHwCanvasToHomeworkSubmission()" style="background:linear-gradient(135deg, #10b981, #059669); color:#ffffff; border:none; border-radius:10px; padding:8px 20px; font-weight:800; font-size:0.9rem; box-shadow:0 4px 14px rgba(16,185,129,0.4);">
+            <i class="fa-solid fa-circle-check"></i> บันทึกทุกแผ่นส่งการบ้าน
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- JS Scripts with Cache-Busting -->
+  <script src="js/firebase-config.js?v=8.19.0"></script>
+  <script src="js/cloudinary.js?v=8.19.0"></script>
+  <script src="js/app.js?v=8.19.0"></script>
+</body>
+</html>
