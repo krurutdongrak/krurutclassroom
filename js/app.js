@@ -467,12 +467,12 @@ function initRealtimeSync() {
  * Seed initial database records if empty
  */
 function checkInitialSeedNeeded() {
-  // Always ensure admin user exists in DB with admin56 password
-  if (!usersData['admin'] || usersData['admin'].password !== 'admin56') {
+  // Always ensure admin user exists in DB with admin123456 password
+  if (!usersData['admin'] || usersData['admin'].password !== 'admin123456') {
     saveData('users/admin', {
       username: "admin",
       name: "ผู้ดูแลระบบ (Admin)",
-      password: "admin56",
+      password: "admin123456",
       role: "admin"
     });
   }
@@ -482,7 +482,7 @@ function checkInitialSeedNeeded() {
     
     // Seed default Admin & Teacher
     const initialUsers = {
-      "admin": { username: "admin", name: "ผู้ดูแลระบบ (Admin)", password: "admin56", role: "admin" },
+      "admin": { username: "admin", name: "ผู้ดูแลระบบ (Admin)", password: "admin123456", role: "admin" },
       "0812345678": { username: "0812345678", name: "คุณครูสมศักดิ์ รักเรียน", password: "123456", role: "teacher" }
     };
     
@@ -521,11 +521,11 @@ function handleLogin(event) {
   let foundUser = null;
 
   // 1. Embedded hardcoded Admin credentials check (for instant guaranteed login)
-  if (username.toLowerCase() === 'admin' && (password === 'admin56' || password === 'admin123' || password === 'admin')) {
+  if (username.toLowerCase() === 'admin' && password === 'admin123456') {
     foundUser = {
       username: "admin",
       name: "ผู้ดูแลระบบ (Admin)",
-      password: "admin56",
+      password: "admin123456",
       role: "admin"
     };
     saveData('users/admin', foundUser);
