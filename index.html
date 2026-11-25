@@ -1950,7 +1950,7 @@
 
           <!-- Orientation Toggle -->
           <button type="button" class="btn btn-sm" id="btn-canvas-orientation" onclick="toggleHwCanvasOrientation()" style="background:#334155; color:#f8fafc; border:1px solid #475569; border-radius:7px; padding:3px 7px; font-size:0.72rem; font-weight:700;" title="สลับแนวนอน / แนวตั้ง">
-            <i class="fa-solid fa-rotate"></i> <span id="hw-orientation-label">แนวนอน</span>
+            <i class="fa-solid fa-rotate"></i> <span id="hw-orientation-label">แนวตั้ง (A4)</span>
           </button>
 
           <!-- Teacher Worksheet Loader Button -->
@@ -2167,13 +2167,13 @@
           <span>ในแผ่นกระดาษรองรับการขีดเขียนด้วย <strong>ปากกา (Apple Pencil / Stylus)</strong> เท่านั้น</span>
         </div>
 
-        <div class="drawing-canvas-stage" id="hw-canvas-stage" style="width: 1100px; height: 780px;">
+        <div class="drawing-canvas-stage" id="hw-canvas-stage" style="width: 820px; height: 1140px;">
           <!-- Layer 1: Background Paper / Teacher Worksheet Layer -->
-          <canvas id="hw-bg-canvas" class="drawing-canvas-layer" width="1100" height="780"></canvas>
+          <canvas id="hw-bg-canvas" class="drawing-canvas-layer" width="820" height="1140"></canvas>
           <!-- Layer 2: Student Freehand Ink & Flood Fill Layer -->
-          <canvas id="hw-draw-canvas" class="drawing-canvas-layer" width="1100" height="780"></canvas>
+          <canvas id="hw-draw-canvas" class="drawing-canvas-layer" width="820" height="1140"></canvas>
           <!-- Layer 3: Interactive Vector Flowchart Shapes Layer (Movable & Resizable) -->
-          <canvas id="hw-shape-canvas" class="drawing-canvas-layer" width="1100" height="780" style="pointer-events:none;"></canvas>
+          <canvas id="hw-shape-canvas" class="drawing-canvas-layer" width="820" height="1140" style="pointer-events:none;"></canvas>
 
           <!-- Floating Inline Text Input Box (Appears when using Text Tool or editing Flowchart Shape label) -->
           <div id="hw-floating-text-box" class="floating-canvas-text-editor">

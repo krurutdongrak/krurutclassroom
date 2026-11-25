@@ -6759,9 +6759,9 @@ const hwDrawState = {
   isDrawing: false,
   tool: 'pen',          // 'pen' | 'select' | 'brush' | 'highlighter' | 'bucket' | 'text' | 'eraser' | 'pan' | FLOWCHART_SHAPE_TOOLS
   color: '#0f172a',
-  strokeSize: 4,
+  strokeSize: 3,
   paperType: 'lined',   // 'blank' | 'lined' | 'grid' | 'custom'
-  orientation: 'landscape', // 'landscape' (1100x780) | 'portrait' (820x1140)
+  orientation: 'portrait', // 'portrait' (820x1140) | 'landscape' (1100x780)
   zoom: 1,
   startX: 0,
   startY: 0,
@@ -6813,7 +6813,7 @@ function createBlankSheetEntry(index = 0) {
   return {
     id: `sheet_${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${index}`,
     paperType: hwDrawState.paperType || 'lined',
-    orientation: hwDrawState.orientation || 'landscape',
+    orientation: hwDrawState.orientation || 'portrait',
     customBgImage: hwDrawState.customBgImage || null,
     worksheetPdfPage: hwDrawState.worksheetPdfPage || 1,
     rasterData: null,
@@ -6865,6 +6865,7 @@ function openHomeworkDrawingStudio(autoLoadWorksheet = false, targetSheetIdx = n
   setTimeout(() => {
     // Initialize first sheet if none exist yet
     if (!Array.isArray(hwDrawState.sheets) || hwDrawState.sheets.length === 0) {
+      applyCanvasOrientationDimensions('portrait');
       hwDrawState.sheets = [createBlankSheetEntry(0)];
       hwDrawState.currentSheetIndex = 0;
       hwDrawState.shapes = [];
