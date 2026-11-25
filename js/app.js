@@ -1826,6 +1826,45 @@ function readFileAsBase64(file) {
   });
 }
 
+let pendingHwCreateFiles = [];
+let pendingHwEditExistingFiles = [];
+let pendingHwEditNewFiles = [];
+
+function handleHwCreateFilesSelect(input) {
+  if (input && input.files && input.files.length > 0) {
+    Array.from(input.files).forEach(f => pendingHwCreateFiles.push(f));
+    input.value = '';
+  }
+  renderHwCreateFilesList();
+}
+
+function removeHwCreateFile(idx) {
+  pendingHwCreateFiles.splice(idx, 1);
+  renderHwCreateFilesList();
+}
+
+function renderHwCreateFilesList() {
+  const container = document.getElementById('hw-create-files-list');
+  if (!container) return;
+  if (pendingHwCreateFiles.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  let html = `<div style="font-size:0.82rem; font-weight:700; color:#1e293b; margin-bottom:5px;">ไฟล์ที่เลือกไว้ (${pendingHwCreateFiles.length} ไฟล์):</div><div style="display:flex; flex-wrap:wrap; gap:6px;">`;
+  pendingHwCreateFiles.forEach((f, idx) => {
+    const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
+    html += `
+      <span style="display:inline-flex; align-items:center; gap:6px; background:${isPdf ? '#fef2f2' : '#eff6ff'}; border:1px solid ${isPdf ? '#fecaca' : '#bfdbfe'}; color:${isPdf ? '#dc2626' : '#1d4ed8'}; border-radius:8px; padding:4px 10px; font-size:0.8rem; font-weight:600;">
+        <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}"></i>
+        <span style="max-width:190px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${f.name}</span>
+        <button type="button" onclick="removeHwCreateFile(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:0 2px; font-size:0.85rem;" title="นำไฟล์นี้ออก"><i class="fa-solid fa-circle-xmark"></i></button>
+      </span>
+    `;
+  });
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
 function openCreateHomeworkModal(preselectedCourseId = '') {
   document.getElementById('hw-title').value = '';
   document.getElementById('hw-desc').value = '';
@@ -1833,6 +1872,8 @@ function openCreateHomeworkModal(preselectedCourseId = '') {
   document.getElementById('hw-due-date').value = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
   document.getElementById('hw-youtube-url').value = '';
   document.getElementById('hw-img-file').value = '';
+  pendingHwCreateFiles = [];
+  renderHwCreateFilesList();
 
   const courseSelect = document.getElementById('hw-course-id');
   if (courseSelect && preselectedCourseId) {
@@ -1855,7 +1896,12 @@ async function saveHomeworkForm(e) {
   const maxScore = parseInt(document.getElementById('hw-max-score').value) || 10;
   const dueDate = document.getElementById('hw-due-date').value;
   const youtubeUrl = document.getElementById('hw-youtube-url').value.trim();
-  const imgFile = document.getElementById('hw-img-file').files[0];
+  const directFiles = document.getElementById('hw-img-file').files;
+
+  const filesToUpload = [...pendingHwCreateFiles];
+  if (directFiles && directFiles.length > 0) {
+    Array.from(directFiles).forEach(f => filesToUpload.push(f));
+  }
 
   const btnSave = document.getElementById('btn-save-hw');
   btnSave.disabled = true;
@@ -1864,10 +1910,25 @@ async function saveHomeworkForm(e) {
   let pdfs = null;
   let imageUrl = null;
 
-  if (imgFile) {
-    const uploadedUrl = await uploadImageFile(imgFile);
-    imageUrl = uploadedUrl;
-    pdfs = [{ name: imgFile.name, url: uploadedUrl, size: imgFile.size }];
+  if (filesToUpload.length > 0) {
+    const uploadedList = [];
+    for (let i = 0; i < filesToUpload.length; i++) {
+      const f = filesToUpload[i];
+      const uploadedUrl = await uploadImageFile(f);
+      if (uploadedUrl) {
+        const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
+        uploadedList.push({
+          name: f.name,
+          url: uploadedUrl,
+          size: f.size,
+          type: isPdf ? 'pdf' : 'image'
+        });
+      }
+    }
+    if (uploadedList.length > 0) {
+      pdfs = uploadedList;
+      imageUrl = uploadedList[0].url;
+    }
   }
 
   const newHw = {
@@ -1889,6 +1950,7 @@ async function saveHomeworkForm(e) {
     btnSave.disabled = false;
     btnSave.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ประกาศการบ้าน`;
     closeModal('modal-create-homework');
+    pendingHwCreateFiles = [];
 
     // Backup to local client cache (localStorage)
     if (newKey) {
@@ -1904,13 +1966,55 @@ async function saveHomeworkForm(e) {
 }
 
 /* -------------------------------------------------------------
-   LESSON & LEARNING MATERIALS ENGINE (Images, PDFs, Video Links)
+   LESSON & LEARNING MATERIALS ENGINE (Multi-Images, Multi-PDFs, Video Links)
 ------------------------------------------------------------- */
+let pendingLessonCreateFiles = [];
+let pendingLessonEditExistingFiles = [];
+let pendingLessonEditNewFiles = [];
+
+function handleLessonCreateFilesSelect(input) {
+  if (input && input.files && input.files.length > 0) {
+    Array.from(input.files).forEach(f => pendingLessonCreateFiles.push(f));
+    input.value = '';
+  }
+  renderLessonCreateFilesPreview();
+}
+
+function removeLessonCreateFile(idx) {
+  pendingLessonCreateFiles.splice(idx, 1);
+  renderLessonCreateFilesPreview();
+}
+
+function renderLessonCreateFilesPreview() {
+  const container = document.getElementById('lesson-create-files-preview');
+  if (!container) return;
+  if (pendingLessonCreateFiles.length === 0) {
+    container.innerHTML = `<span style="font-size:0.82rem; color:var(--text-muted);">ยังไม่ได้เลือกไฟล์ (สามารถเลือกเพิ่มได้หลายไฟล์ ทั้งรูปภาพและ PDF)</span>`;
+    return;
+  }
+
+  let html = `<div style="font-size:0.84rem; font-weight:700; color:#92400e; margin-bottom:6px;">ไฟล์ที่เตรียมอัปโหลด (${pendingLessonCreateFiles.length} ไฟล์):</div><div style="display:flex; flex-wrap:wrap; gap:6px;">`;
+  pendingLessonCreateFiles.forEach((f, idx) => {
+    const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
+    html += `
+      <span style="display:inline-flex; align-items:center; gap:6px; background:${isPdf ? '#fef2f2' : '#eff6ff'}; border:1px solid ${isPdf ? '#fecaca' : '#bfdbfe'}; color:${isPdf ? '#dc2626' : '#1d4ed8'}; border-radius:8px; padding:5px 10px; font-size:0.8rem; font-weight:600;">
+        <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}"></i>
+        <span style="max-width:210px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${f.name}</span>
+        <button type="button" onclick="removeLessonCreateFile(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:0 2px; font-size:0.9rem;" title="ลบไฟล์นี้ออก"><i class="fa-solid fa-circle-xmark"></i></button>
+      </span>
+    `;
+  });
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
 function openCreateLessonModal(preselectedCourseId = '') {
   document.getElementById('lesson-title').value = '';
   document.getElementById('lesson-desc').value = '';
   document.getElementById('lesson-video-url').value = '';
   document.getElementById('lesson-files').value = '';
+  pendingLessonCreateFiles = [];
+  renderLessonCreateFilesPreview();
 
   const courseSelect = document.getElementById('lesson-course-id');
   if (courseSelect && preselectedCourseId) {
@@ -1935,16 +2039,21 @@ async function saveLessonForm(e) {
   const title = document.getElementById('lesson-title').value.trim();
   const desc = document.getElementById('lesson-desc').value.trim();
   const videoUrl = document.getElementById('lesson-video-url').value.trim();
-  const fileList = document.getElementById('lesson-files').files;
+  const directFiles = document.getElementById('lesson-files').files;
+
+  const filesToUpload = [...pendingLessonCreateFiles];
+  if (directFiles && directFiles.length > 0) {
+    Array.from(directFiles).forEach(f => filesToUpload.push(f));
+  }
 
   const btnSave = document.getElementById('btn-save-lesson');
   btnSave.disabled = true;
-  btnSave.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังอัปโหลดสื่อบทเรียน...`;
+  btnSave.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังอัปโหลดสื่อบทเรียน (${filesToUpload.length} ไฟล์)...`;
 
   const attachments = [];
-  if (fileList && fileList.length > 0) {
-    for (let i = 0; i < fileList.length; i++) {
-      const f = fileList[i];
+  if (filesToUpload.length > 0) {
+    for (let i = 0; i < filesToUpload.length; i++) {
+      const f = filesToUpload[i];
       const uploadedUrl = await uploadImageFile(f);
       if (uploadedUrl) {
         const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
@@ -1974,6 +2083,7 @@ async function saveLessonForm(e) {
     btnSave.disabled = false;
     btnSave.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> บันทึกและเผยแพร่บทเรียน`;
     closeModal('modal-create-lesson');
+    pendingLessonCreateFiles = [];
 
     if (newKey) {
       lessonsData[newKey] = newLesson;
@@ -1982,10 +2092,70 @@ async function saveLessonForm(e) {
       } catch (e) {}
     }
 
-    showPopupSuccess("เพิ่มบทเรียนสำเร็จ!", `เผยแพร่บทเรียน "${title}" ให้นักเรียนเข้าศึกษาได้ทันที`);
+    showPopupSuccess("เพิ่มบทเรียนสำเร็จ!", `เผยแพร่บทเรียน "${title}" (แนบสื่อ ${attachments.length} ไฟล์) ให้นักเรียนเข้าศึกษาได้ทันที`);
     logActivity(`เพิ่มบทเรียนใหม่: ${title}`);
     renderCoursesList();
   });
+}
+
+function handleLessonEditFilesSelect(input) {
+  if (input && input.files && input.files.length > 0) {
+    Array.from(input.files).forEach(f => pendingLessonEditNewFiles.push(f));
+    input.value = '';
+  }
+  renderLessonEditFilesList();
+}
+
+function removeLessonEditExistingFile(idx) {
+  pendingLessonEditExistingFiles.splice(idx, 1);
+  renderLessonEditFilesList();
+}
+
+function removeLessonEditNewFile(idx) {
+  pendingLessonEditNewFiles.splice(idx, 1);
+  renderLessonEditFilesList();
+}
+
+function renderLessonEditFilesList() {
+  const currentFilesDiv = document.getElementById('edit-lesson-files-current');
+  if (!currentFilesDiv) return;
+
+  const totalCount = pendingLessonEditExistingFiles.length + pendingLessonEditNewFiles.length;
+  if (totalCount === 0) {
+    currentFilesDiv.innerHTML = `<span style="font-size:0.84rem; color:var(--text-muted);">ยังไม่มีไฟล์ภาพหรือ PDF แนบ (กดปุ่ม "+ เลือกเพิ่มไฟล์ภาพ / PDF" ด้านบนเพื่อแนบได้หลายไฟล์)</span>`;
+    return;
+  }
+
+  let html = `<div style="font-size:0.84rem; font-weight:700; color:#92400e; margin-bottom:6px;">ไฟล์สื่อการสอนทั้งหมดที่จะบันทึก (${totalCount} ไฟล์):</div><div style="display:flex; flex-wrap:wrap; gap:6px;">`;
+
+  pendingLessonEditExistingFiles.forEach((att, idx) => {
+    const isPdf = att.type === 'pdf' || (att.url && (att.url.includes('application/pdf') || att.url.toLowerCase().includes('.pdf')));
+    const safeUrl = (att.url || '').replace(/'/g, "\\'");
+    const safeName = (att.name || `ไฟล์ที่ ${idx + 1}`).replace(/'/g, "\\'");
+    html += `
+      <span style="display:inline-flex; align-items:center; gap:5px; background:${isPdf ? '#fef2f2' : '#eff6ff'}; border:1.5px solid ${isPdf ? '#fecaca' : '#bfdbfe'}; border-radius:8px; padding:4px 8px; font-size:0.8rem; font-weight:600;">
+        <button type="button" onclick="showPDFPreviewModal('${safeUrl}', '${safeName}')" style="background:none; border:none; color:${isPdf ? '#dc2626' : '#1d4ed8'}; cursor:pointer; display:inline-flex; align-items:center; gap:5px; font-weight:600; padding:0;" title="คลิกเพื่อดูไฟล์">
+          <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}"></i>
+          <span style="max-width:190px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${att.name || `ไฟล์ที่ ${idx + 1}`}</span>
+        </button>
+        <button type="button" onclick="removeLessonEditExistingFile(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:0 2px; font-size:0.9rem; margin-left:2px;" title="ลบไฟล์นี้ออก"><i class="fa-solid fa-circle-xmark"></i></button>
+      </span>
+    `;
+  });
+
+  pendingLessonEditNewFiles.forEach((f, idx) => {
+    const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
+    html += `
+      <span style="display:inline-flex; align-items:center; gap:6px; background:#ecfdf5; border:1.5px solid #6ee7b7; color:#047857; border-radius:8px; padding:4px 9px; font-size:0.8rem; font-weight:700;">
+        <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}"></i>
+        <span style="max-width:185px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">[ใหม่] ${f.name}</span>
+        <button type="button" onclick="removeLessonEditNewFile(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:0 2px; font-size:0.9rem;" title="นำไฟล์ใหม่ออก"><i class="fa-solid fa-circle-xmark"></i></button>
+      </span>
+    `;
+  });
+
+  html += `</div>`;
+  currentFilesDiv.innerHTML = html;
 }
 
 function openEditLessonModal(lessonId) {
@@ -2001,25 +2171,9 @@ function openEditLessonModal(lessonId) {
   const selectedTargets = lesson.targetClasses || (lesson.targetClass ? lesson.targetClass.split(',').map(s => s.trim()) : ['all']);
   renderTargetClassChips('edit-lesson-target-chips-container', lesson.courseId, selectedTargets);
 
-  const currentFilesDiv = document.getElementById('edit-lesson-files-current');
-  const atts = Array.isArray(lesson.attachments) ? lesson.attachments : [];
-  if (atts.length > 0) {
-    let attHtml = `<div style="font-size:0.84rem; color:var(--text-muted); margin-bottom:6px;">ไฟล์สื่อการสอนปัจจุบัน (${atts.length} ไฟล์):</div><div style="display:flex; flex-wrap:wrap; gap:6px;">`;
-    atts.forEach((att) => {
-      const isPdf = att.type === 'pdf' || (att.url && (att.url.includes('application/pdf') || att.url.toLowerCase().includes('.pdf')));
-      const safeUrl = (att.url || '').replace(/'/g, "\\'");
-      const safeName = (att.name || 'สื่อบทเรียน').replace(/'/g, "\\'");
-      attHtml += `
-        <button type="button" class="btn btn-sm ${isPdf ? 'btn-outline-danger' : 'btn-outline-primary'}" style="border-radius:8px; font-size:0.78rem;" onclick="showPDFPreviewModal('${safeUrl}', '${safeName}')">
-          <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}"></i> ${att.name || 'ดูไฟล์แนบ'}
-        </button>
-      `;
-    });
-    attHtml += `</div>`;
-    currentFilesDiv.innerHTML = attHtml;
-  } else {
-    currentFilesDiv.innerHTML = `<span style="font-size:0.84rem; color:var(--text-muted);">ยังไม่มีไฟล์ภาพหรือ PDF แนบ</span>`;
-  }
+  pendingLessonEditExistingFiles = Array.isArray(lesson.attachments) ? lesson.attachments.map(a => ({ ...a })) : [];
+  pendingLessonEditNewFiles = [];
+  renderLessonEditFilesList();
 
   openModal('modal-edit-lesson');
 }
@@ -2033,30 +2187,31 @@ async function saveEditLessonForm(e) {
   const title = document.getElementById('edit-lesson-title').value.trim();
   const desc = document.getElementById('edit-lesson-desc').value.trim();
   const videoUrl = document.getElementById('edit-lesson-video-url').value.trim();
-  const fileList = document.getElementById('edit-lesson-files').files;
+  const directFiles = document.getElementById('edit-lesson-files').files;
+
+  const filesToUpload = [...pendingLessonEditNewFiles];
+  if (directFiles && directFiles.length > 0) {
+    Array.from(directFiles).forEach(f => filesToUpload.push(f));
+  }
 
   const btnUpdate = document.getElementById('btn-update-lesson');
   btnUpdate.disabled = true;
   btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...`;
 
-  let attachments = existingLesson.attachments || null;
-  if (fileList && fileList.length > 0) {
-    const newAtts = [];
-    for (let i = 0; i < fileList.length; i++) {
-      const f = fileList[i];
+  const finalAttachments = [...pendingLessonEditExistingFiles];
+  if (filesToUpload.length > 0) {
+    for (let i = 0; i < filesToUpload.length; i++) {
+      const f = filesToUpload[i];
       const uploadedUrl = await uploadImageFile(f);
       if (uploadedUrl) {
         const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
-        newAtts.push({
+        finalAttachments.push({
           name: f.name,
           url: uploadedUrl,
           size: f.size,
           type: isPdf ? 'pdf' : 'image'
         });
       }
-    }
-    if (newAtts.length > 0) {
-      attachments = newAtts;
     }
   }
 
@@ -2066,7 +2221,7 @@ async function saveEditLessonForm(e) {
     title,
     desc,
     videoUrl: videoUrl || null,
-    attachments,
+    attachments: finalAttachments.length > 0 ? finalAttachments : null,
     updatedAt: new Date().toISOString()
   };
 
@@ -2074,13 +2229,14 @@ async function saveEditLessonForm(e) {
     btnUpdate.disabled = false;
     btnUpdate.innerHTML = `<i class="fa-solid fa-save"></i> บันทึกการแก้ไขบทเรียน`;
     closeModal('modal-edit-lesson');
+    pendingLessonEditNewFiles = [];
 
     lessonsData[lessonId] = { ...existingLesson, ...updatedLesson };
     try {
       localStorage.setItem('ag_lessons', JSON.stringify(lessonsData));
     } catch (e) {}
 
-    showPopupSuccess("แก้ไขบทเรียนสำเร็จ!", `อัปเดตบทเรียน "${title}" เรียบร้อยแล้ว`);
+    showPopupSuccess("แก้ไขบทเรียนสำเร็จ!", `อัปเดตบทเรียน "${title}" (รวม ${finalAttachments.length} ไฟล์) เรียบร้อยแล้ว`);
     logActivity(`แก้ไขบทเรียน: ${title}`);
     renderCoursesList();
   });
@@ -2423,17 +2579,27 @@ function renderCoursesList() {
         
         const subCount = submissionsData[hw.id] ? Object.keys(submissionsData[hw.id]).length : 0;
         
-        // Extract PDF / Attachment file info
-        let fileUrl = null;
-        let fileName = hw.title || 'เอกสารคำสั่งงาน';
-        if (hw.pdfs && Array.isArray(hw.pdfs) && hw.pdfs.length > 0 && hw.pdfs[0].url) {
-          fileUrl = hw.pdfs[0].url;
-          if (hw.pdfs[0].name) fileName = hw.pdfs[0].name;
+        // Extract all PDF / Image attachments for homework
+        const hwAttachments = [];
+        if (hw.pdfs && Array.isArray(hw.pdfs) && hw.pdfs.length > 0) {
+          hw.pdfs.forEach((p, idx) => {
+            if (p && p.url) {
+              hwAttachments.push({
+                url: p.url,
+                name: p.name || `${hw.title || 'เอกสารคำสั่งงาน'} (#${idx + 1})`,
+                type: p.type || ((p.url.includes('application/pdf') || p.url.toLowerCase().includes('pdf')) ? 'pdf' : 'image')
+              });
+            }
+          });
         } else if (hw.imageUrl) {
-          fileUrl = hw.imageUrl;
+          const isPdf = hw.imageUrl.includes('application/pdf') || hw.imageUrl.toLowerCase().includes('pdf');
+          hwAttachments.push({
+            url: hw.imageUrl,
+            name: hw.title || 'เอกสารคำสั่งงาน',
+            type: isPdf ? 'pdf' : 'image'
+          });
         }
 
-        const isPdf = fileUrl && (fileUrl.includes('application/pdf') || fileUrl.includes('.pdf') || fileUrl.toLowerCase().includes('pdf'));
         const targets = hw.targetClasses || (hw.targetClass ? hw.targetClass.split(',').map(s => s.trim()) : ['all']);
         const isTargetAll = targets.includes('all') || targets.length === 0;
         const targetLabel = isTargetAll ? 'ทุกห้องเรียน' : 'ห้อง ' + targets.join(', ');
@@ -2465,14 +2631,21 @@ function renderCoursesList() {
                 </div>
               ` : ''}
               
-              <!-- PDF / Image Attachment Button -->
-              ${fileUrl ? `
-                <div style="margin:8px 0;">
-                  <button type="button" class="hw-attachment-btn" onclick="showPDFPreviewModal('${fileUrl.replace(/'/g, "\\'")}', '${fileName.replace(/'/g, "\\'")}')">
-                    <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}" style="font-size:1.2rem; color:${isPdf ? '#ef4444' : '#2563eb'};"></i> 
-                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">📄 ${fileName}</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem; opacity:0.6;"></i>
-                  </button>
+              <!-- PDF / Image Attachments List -->
+              ${hwAttachments.length > 0 ? `
+                <div style="display:flex; flex-direction:column; gap:6px; margin:8px 0;">
+                  ${hwAttachments.map((att) => {
+                    const isPdf = att.type === 'pdf' || (att.url && (att.url.includes('application/pdf') || att.url.toLowerCase().includes('pdf')));
+                    const safeUrl = (att.url || '').replace(/'/g, "\\'");
+                    const safeName = (att.name || 'เอกสารคำสั่งงาน').replace(/'/g, "\\'");
+                    return `
+                      <button type="button" class="hw-attachment-btn" onclick="showPDFPreviewModal('${safeUrl}', '${safeName}')">
+                        <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}" style="font-size:1.2rem; color:${isPdf ? '#ef4444' : '#2563eb'};"></i> 
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">📄 ${att.name}</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem; opacity:0.6;"></i>
+                      </button>
+                    `;
+                  }).join('')}
                 </div>
               ` : ''}
 
@@ -2630,6 +2803,66 @@ function saveEditCourseForm(e) {
   });
 }
 
+function handleHwEditFilesSelect(input) {
+  if (input && input.files && input.files.length > 0) {
+    Array.from(input.files).forEach(f => pendingHwEditNewFiles.push(f));
+    input.value = '';
+  }
+  renderHwEditFilesList();
+}
+
+function removeHwEditExistingFile(idx) {
+  pendingHwEditExistingFiles.splice(idx, 1);
+  renderHwEditFilesList();
+}
+
+function removeHwEditNewFile(idx) {
+  pendingHwEditNewFiles.splice(idx, 1);
+  renderHwEditFilesList();
+}
+
+function renderHwEditFilesList() {
+  const currentFileDiv = document.getElementById('edit-hw-file-current');
+  if (!currentFileDiv) return;
+
+  const totalCount = pendingHwEditExistingFiles.length + pendingHwEditNewFiles.length;
+  if (totalCount === 0) {
+    currentFileDiv.innerHTML = '<span style="font-size:0.85rem; color:var(--text-muted);">ยังไม่มีไฟล์แนบ (เลือกเพิ่มได้หลายไฟล์)</span>';
+    return;
+  }
+
+  let html = `<div style="font-size:0.85rem; font-weight:700; color:#1e293b; margin-bottom:6px;">ไฟล์แนบทั้งหมด (${totalCount} ไฟล์):</div><div style="display:flex; flex-wrap:wrap; gap:6px;">`;
+
+  pendingHwEditExistingFiles.forEach((att, idx) => {
+    const isPdf = att.type === 'pdf' || (att.url && (att.url.includes('application/pdf') || att.url.toLowerCase().includes('pdf')));
+    const safeUrl = (att.url || '').replace(/'/g, "\\'");
+    const safeName = (att.name || `ไฟล์ที่ ${idx + 1}`).replace(/'/g, "\\'");
+    html += `
+      <span style="display:inline-flex; align-items:center; gap:5px; background:${isPdf ? '#fef2f2' : '#eff6ff'}; border:1.5px solid ${isPdf ? '#fecaca' : '#bfdbfe'}; border-radius:8px; padding:4px 8px; font-size:0.8rem; font-weight:600;">
+        <button type="button" onclick="showPDFPreviewModal('${safeUrl}', '${safeName}')" style="background:none; border:none; color:${isPdf ? '#dc2626' : '#1d4ed8'}; cursor:pointer; display:inline-flex; align-items:center; gap:5px; font-weight:600; padding:0;">
+          <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}"></i>
+          <span style="max-width:190px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${att.name || `ไฟล์ที่ ${idx + 1}`}</span>
+        </button>
+        <button type="button" onclick="removeHwEditExistingFile(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:0 2px; font-size:0.9rem; margin-left:2px;" title="ลบไฟล์นี้ออก"><i class="fa-solid fa-circle-xmark"></i></button>
+      </span>
+    `;
+  });
+
+  pendingHwEditNewFiles.forEach((f, idx) => {
+    const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
+    html += `
+      <span style="display:inline-flex; align-items:center; gap:6px; background:#ecfdf5; border:1.5px solid #6ee7b7; color:#047857; border-radius:8px; padding:4px 9px; font-size:0.8rem; font-weight:700;">
+        <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}"></i>
+        <span style="max-width:185px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">[ใหม่] ${f.name}</span>
+        <button type="button" onclick="removeHwEditNewFile(${idx})" style="background:none; border:none; color:#ef4444; cursor:pointer; padding:0 2px; font-size:0.9rem;" title="นำไฟล์ใหม่ออก"><i class="fa-solid fa-circle-xmark"></i></button>
+      </span>
+    `;
+  });
+
+  html += `</div>`;
+  currentFileDiv.innerHTML = html;
+}
+
 function openEditHomeworkModal(hwId) {
   const hw = homeworkData[hwId];
   if (!hw) return;
@@ -2645,27 +2878,27 @@ function openEditHomeworkModal(hwId) {
   const selectedTargets = hw.targetClasses || (hw.targetClass ? hw.targetClass.split(',').map(s => s.trim()) : ['all']);
   renderTargetClassChips('edit-hw-target-chips-container', hw.courseId, selectedTargets);
 
-  const currentFileDiv = document.getElementById('edit-hw-file-current');
-  let currentFileUrl = null;
-  let currentFileName = hw.title || 'ไฟล์แนบปัจจุบัน';
-  if (hw.pdfs && Array.isArray(hw.pdfs) && hw.pdfs.length > 0 && hw.pdfs[0].url) {
-    currentFileUrl = hw.pdfs[0].url;
-    if (hw.pdfs[0].name) currentFileName = hw.pdfs[0].name;
+  pendingHwEditExistingFiles = [];
+  if (hw.pdfs && Array.isArray(hw.pdfs) && hw.pdfs.length > 0) {
+    hw.pdfs.forEach((p, idx) => {
+      if (p && p.url) {
+        pendingHwEditExistingFiles.push({
+          name: p.name || `${hw.title || 'ไฟล์แนบ'} #${idx + 1}`,
+          url: p.url,
+          size: p.size || 0,
+          type: p.type || ((p.url.includes('application/pdf') || p.url.toLowerCase().includes('pdf')) ? 'pdf' : 'image')
+        });
+      }
+    });
   } else if (hw.imageUrl) {
-    currentFileUrl = hw.imageUrl;
+    pendingHwEditExistingFiles.push({
+      name: hw.title || 'ไฟล์แนบปัจจุบัน',
+      url: hw.imageUrl,
+      type: (hw.imageUrl.includes('application/pdf') || hw.imageUrl.toLowerCase().includes('pdf')) ? 'pdf' : 'image'
+    });
   }
-
-  if (currentFileUrl) {
-    const isPdf = currentFileUrl.includes('application/pdf') || currentFileUrl.includes('.pdf') || currentFileUrl.toLowerCase().includes('pdf');
-    currentFileDiv.innerHTML = `
-      <div style="font-size:0.88rem; color:var(--text-muted); margin-bottom:4px;">ไฟล์แนบปัจจุบัน:</div>
-      <button type="button" class="btn btn-sm ${isPdf ? 'btn-outline-danger' : 'btn-outline-primary'}" onclick="showPDFPreviewModal('${currentFileUrl.replace(/'/g, "\\'")}', '${currentFileName.replace(/'/g, "\\'")}')">
-        <i class="${isPdf ? 'fa-solid fa-file-pdf' : 'fa-solid fa-image'}" style="color:${isPdf ? '#ef4444' : '#2563eb'};"></i> ดูตัวอย่างไฟล์แนบปัจจุบัน (${currentFileName})
-      </button>
-    `;
-  } else {
-    currentFileDiv.innerHTML = '<span style="font-size:0.85rem; color:var(--text-muted);">ยังไม่มีไฟล์แนบ</span>';
-  }
+  pendingHwEditNewFiles = [];
+  renderHwEditFilesList();
 
   openModal('modal-edit-homework');
 }
@@ -2680,21 +2913,38 @@ async function saveEditHomeworkForm(e) {
   const maxScore = parseInt(document.getElementById('edit-hw-max-score').value) || 10;
   const dueDate = document.getElementById('edit-hw-due-date').value;
   const youtubeUrl = document.getElementById('edit-hw-youtube-url').value.trim();
-  const fileInput = document.getElementById('edit-hw-file').files[0];
+  const directFiles = document.getElementById('edit-hw-file').files;
+
+  const filesToUpload = [...pendingHwEditNewFiles];
+  if (directFiles && directFiles.length > 0) {
+    Array.from(directFiles).forEach(f => filesToUpload.push(f));
+  }
 
   const btnUpdate = document.getElementById('btn-update-hw');
   btnUpdate.disabled = true;
   btnUpdate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...`;
 
   const existingHw = homeworkData[hwId] || {};
-  let imageUrl = existingHw.imageUrl || null;
-  let pdfs = existingHw.pdfs || null;
+  const finalPdfs = [...pendingHwEditExistingFiles];
 
-  if (fileInput) {
-    const uploadedUrl = await uploadImageFile(fileInput);
-    imageUrl = uploadedUrl;
-    pdfs = [{ name: fileInput.name, url: uploadedUrl, size: fileInput.size }];
+  if (filesToUpload.length > 0) {
+    for (let i = 0; i < filesToUpload.length; i++) {
+      const f = filesToUpload[i];
+      const uploadedUrl = await uploadImageFile(f);
+      if (uploadedUrl) {
+        const isPdf = (f.type === 'application/pdf') || (f.name && f.name.toLowerCase().endsWith('.pdf'));
+        finalPdfs.push({
+          name: f.name,
+          url: uploadedUrl,
+          size: f.size,
+          type: isPdf ? 'pdf' : 'image'
+        });
+      }
+    }
   }
+
+  const pdfs = finalPdfs.length > 0 ? finalPdfs : null;
+  const imageUrl = finalPdfs.length > 0 ? finalPdfs[0].url : null;
 
   const updatedHw = {
     targetClasses,
@@ -2713,6 +2963,7 @@ async function saveEditHomeworkForm(e) {
     btnUpdate.disabled = false;
     btnUpdate.innerHTML = `<i class="fa-solid fa-save"></i> บันทึกการแก้ไข`;
     closeModal('modal-edit-homework');
+    pendingHwEditNewFiles = [];
 
     // Backup to local client cache (localStorage)
     homeworkData[hwId] = { ...existingHw, ...updatedHw };

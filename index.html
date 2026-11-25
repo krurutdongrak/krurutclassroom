@@ -910,8 +910,9 @@
           </div>
 
           <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label"><i class="fa-solid fa-paperclip" style="color:var(--primary);"></i> แนบไฟล์เอกสาร PDF หรือ ไฟล์รูปภาพ คำสั่งงาน</label>
-            <input type="file" id="hw-img-file" class="form-control" accept="application/pdf,image/*">
+            <label class="form-label"><i class="fa-solid fa-paperclip" style="color:var(--primary);"></i> แนบไฟล์เอกสาร PDF หรือ ไฟล์รูปภาพ คำสั่งงาน (เลือกได้หลายไฟล์)</label>
+            <input type="file" id="hw-img-file" class="form-control" accept="application/pdf,image/*,.pdf" multiple onchange="handleHwCreateFilesSelect(this)">
+            <div id="hw-create-files-list" style="margin-top:8px;"></div>
           </div>
         </div>
         <div class="modal-footer">
@@ -1020,8 +1021,8 @@
           </div>
 
           <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label"><i class="fa-solid fa-paperclip" style="color:var(--primary);"></i> แนบไฟล์เอกสาร PDF หรือ ไฟล์รูปภาพ คำสั่งงาน</label>
-            <input type="file" id="edit-hw-file" class="form-control" accept="application/pdf,image/*">
+            <label class="form-label"><i class="fa-solid fa-paperclip" style="color:var(--primary);"></i> เพิ่มไฟล์เอกสาร PDF หรือ ไฟล์รูปภาพ คำสั่งงาน (เลือกเพิ่มได้หลายไฟล์)</label>
+            <input type="file" id="edit-hw-file" class="form-control" accept="application/pdf,image/*,.pdf" multiple onchange="handleHwEditFilesSelect(this)">
             <div id="edit-hw-file-current" style="margin-top:8px;"></div>
           </div>
         </div>
@@ -1079,11 +1080,17 @@
           </div>
 
           <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label"><i class="fa-solid fa-file-circle-plus" style="color:#2563eb;"></i> อัปโหลดไฟล์ภาพประกอบ หรือ ไฟล์เอกสาร PDF บทเรียน (เลือกได้หลายไฟล์)</label>
-            <input type="file" id="lesson-files" class="form-control" accept="application/pdf,image/*,.pdf" multiple>
-            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">
-              <i class="fa-solid fa-circle-info"></i> สามารถเลือกอัปโหลดรูปภาพสไลด์สอนหลายรูปพร้อมกัน หรือไฟล์เอกสารใบความรู้ PDF ได้
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:6px;">
+              <label class="form-label" style="margin:0;"><i class="fa-solid fa-file-circle-plus" style="color:#2563eb;"></i> แนบไฟล์ภาพประกอบ หรือ ไฟล์เอกสาร PDF บทเรียน (เพิ่มได้หลายไฟล์)</label>
+              <button type="button" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('lesson-files').click()" style="border-radius:8px; font-weight:700; font-size:0.78rem; padding:3px 10px;">
+                <i class="fa-solid fa-plus"></i> เลือกเพิ่มไฟล์ภาพ / PDF
+              </button>
             </div>
+            <input type="file" id="lesson-files" class="form-control" accept="application/pdf,image/*,.pdf" multiple onchange="handleLessonCreateFilesSelect(this)">
+            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">
+              <i class="fa-solid fa-circle-info"></i> สามารถกดเลือกไฟล์เพิ่มทีละไฟล์ หรือเลือกหลายไฟล์พร้อมกันได้ไม่จำกัด (ทั้งรูปภาพและ PDF)
+            </div>
+            <div id="lesson-create-files-preview" style="margin-top:8px;"></div>
           </div>
         </div>
         <div class="modal-footer">
@@ -1136,8 +1143,16 @@
           </div>
 
           <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label"><i class="fa-solid fa-file-circle-plus" style="color:#2563eb;"></i> อัปโหลดไฟล์ภาพ หรือ ไฟล์ PDF บทเรียนใหม่ (หากต้องการเปลี่ยนไฟล์แนบ)</label>
-            <input type="file" id="edit-lesson-files" class="form-control" accept="application/pdf,image/*,.pdf" multiple>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:6px;">
+              <label class="form-label" style="margin:0;"><i class="fa-solid fa-file-circle-plus" style="color:#2563eb;"></i> เพิ่มไฟล์ภาพ หรือ ไฟล์ PDF บทเรียน (แนบเพิ่มได้หลายไฟล์)</label>
+              <button type="button" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('edit-lesson-files').click()" style="border-radius:8px; font-weight:700; font-size:0.78rem; padding:3px 10px;">
+                <i class="fa-solid fa-plus"></i> เลือกเพิ่มไฟล์ภาพ / PDF
+              </button>
+            </div>
+            <input type="file" id="edit-lesson-files" class="form-control" accept="application/pdf,image/*,.pdf" multiple onchange="handleLessonEditFilesSelect(this)">
+            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">
+              <i class="fa-solid fa-circle-info"></i> ไฟล์ที่เลือกใหม่จะถูกนำไปรวมต่อท้ายไฟล์ปัจจุบัน (สามารถกดกากบาท <i class="fa-solid fa-xmark" style="color:#ef4444;"></i> เพื่อลบเฉพาะไฟล์ที่ไม่ต้องการออกได้)
+            </div>
             <div id="edit-lesson-files-current" style="margin-top:8px;"></div>
           </div>
         </div>
